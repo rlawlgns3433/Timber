@@ -15,9 +15,24 @@ sf::Vector2f& RandomRotation(sf::Vector2f& v)
 	return v;
 }
 
+// Framework 추가
 float GetRandomAngle()
 {
 	return (float)(rand() / RAND_MAX) * 360.f;
+}
+
+// Framework 추가
+float GetRandomSpeed()
+{
+	return (float)rand() / RAND_MAX * 100 + 200;
+}
+
+
+void ResetCloudInfo(sf::Sprite& const spriteCloud, sf::Texture& cloudTexture, sf::Vector2f& cloudPos, float cloudSpeed)
+{
+	cloudPos.x += 1920 + cloudTexture.getSize().x;
+	cloudSpeed = (rand() % 101) + 200;
+	spriteCloud.setScale(Utils::GetRandomVector2(0.7f, 1.f));
 }
 
 
@@ -27,7 +42,7 @@ int main()
 	srand(time(NULL));
 
 	sf::VideoMode vm(1920, 1080);
-	sf::RenderWindow window(vm, "SFML works!", sf::Style::Default); // 타이틀을 제외한 초기 사이즈, 타이틀
+	sf::RenderWindow window(vm, "Timber!", sf::Style::Default); // 타이틀을 제외한 초기 사이즈, 타이틀
 
 	// 이미지를 담는다.
 	sf::Texture textureBackground;
@@ -59,16 +74,16 @@ int main()
 	timeBar.setSize((timeBarSize));
 	timeBar.setFillColor(sf::Color::Red);
 	Utils::SetOrigin(timeBar, Origins::MC);
-	timeBar.setPosition(1920 / 2, 1080 - 90);
+	timeBar.setPosition(vm.width / 2, vm.height - 90);
 
-	float timeBarDuration = 3.f; // N초만에 timeBar가 줄어든다.
+	float timeBarDuration = 1.f; // N초만에 timeBar가 줄어든다.
 	float timeBarSpeed = -timeBarSize.x / timeBarDuration; // timeBar가 감소하기 때문에 음수
 
 	textMessage.setFont(font);
 	textMessage.setString("Press Enter to Start!");
 	textMessage.setCharacterSize(75);
 	textMessage.setFillColor(sf::Color::White);
-	textMessage.setPosition(1920 / 2, 1080 / 2);
+	textMessage.setPosition(vm.width / 2, vm.height / 2);
 	Utils::SetOrigin(textMessage, Origins::MC);
 
 	textScore.setFont(font);
@@ -82,7 +97,7 @@ int main()
 	textGameover.setString("Gameover!");
 	textGameover.setCharacterSize(75);
 	textGameover.setFillColor(sf::Color::White);
-	textGameover.setPosition(1920 / 2, 1080 / 2);
+	textGameover.setPosition(vm.width / 2, vm.height / 2);
 	Utils::SetOrigin(textGameover, Origins::MC);
 
 
@@ -90,7 +105,7 @@ int main()
 	textureCloud.loadFromFile("graphics/cloud.png");
 	textureBee.loadFromFile("graphics/bee.png");
 	textureTree.loadFromFile("graphics/Tree.png");
-	
+
 
 	spriteBackground.setTexture(textureBackground); // 텍스쳐 적용하기
 	spriteBackground.setPosition(0, 0); // 그릴 위치를 정하기
@@ -112,7 +127,7 @@ int main()
 	spriteBee.setOrigin(textureBee.getSize().x / 2, textureBee.getSize().y / 2);
 	const sf::FloatRect& boundsBee = spriteBee.getLocalBounds(); // 로컬 좌표 좌상단이 (0,0)인 사각형, Origin 구할 때 사용
 	Utils::SetOrigin(spriteBee, Origins::MC); // 중앙으로 Origin 변경
-
+	
 
 	//spriteBee.getGlobalBounds(); // 월드 좌표 좌상단이 (0,0)인 사각형
 
@@ -126,10 +141,10 @@ int main()
 	sf::Vector2f beeDirection(1.f, 0.f); // x축 단위 벡터 -> 방향
 	spriteBee.setScale(-1.f, 1.f);
 
-	float cloudSpeed1 = (rand() % 200 + 100); // 100 ~ 300
-	float cloudSpeed2 = (rand() % 200 + 100); // 100 ~ 300
-	float cloudSpeed3 = (rand() % 200 + 100); // 100 ~ 300
-	
+	float cloudSpeed2 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
+	float cloudSpeed1 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
+	float cloudSpeed3 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
+
 	sf::Vector2f cloudDirection1(-1.f, 0.f); // x축 단위 벡터 -> 방향
 	sf::Vector2f cloudDirection2(-1.f, 0.f); // x축 단위 벡터 -> 방향
 	sf::Vector2f cloudDirection3(-1.f, 0.f); // x축 단위 벡터 -> 방향
@@ -151,9 +166,9 @@ int main()
 	float beeChangeTime = beeDirChangeDuration;
 
 	sf::Clock clock;
-///////////////////////////////////////////////////////////////
-///////////////////////////main loop///////////////////////////
-///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
+	///////////////////////////main loop///////////////////////////
+	///////////////////////////////////////////////////////////////
 	while (window.isOpen())
 	{
 		sf::Time dt = clock.restart();
@@ -170,17 +185,17 @@ int main()
 		{
 			switch (event.type)
 			{
-			case sf::Event::Closed :
+			case sf::Event::Closed:
 				window.close();
 				break;
-			case sf::Event::KeyReleased : // 키 입력
-				if (event.key.code == sf::Keyboard::LControl && (!isPause || !isGameover))
+			case sf::Event::KeyReleased: // 키 입력
+				if (event.key.code == sf::Keyboard::LControl && !isPause && !isGameover)
 				{
 					score += 10;
 					textScore.setString("Score : " + std::to_string(score));
 					break;
 				}
-				
+
 				else if (event.key.code == sf::Keyboard::A)
 				{
 					// 시간이 0이면 게임오버 메시지 & Pause
@@ -193,6 +208,7 @@ int main()
 				}
 				else if (event.key.code == sf::Keyboard::Return)
 				{
+					if (isPause) break; // pause일 떄 return 하면 아무 것도 실행되지 않음
 					if (isGameover)
 					{
 						timeScale = 1.f;
@@ -220,9 +236,9 @@ int main()
 
 		window.clear();
 #pragma region Handle User Input
-///////////////////////////////////////////////////////////////
-/////////////////////// Handle User Input//////////////////////
-///////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////
+		/////////////////////// Handle User Input//////////////////////
+		///////////////////////////////////////////////////////////////
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) // ESC가 눌렸을 때 동작
 		{
 			window.close();
@@ -251,20 +267,20 @@ int main()
 			}
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0) && !isPause)
 		{
 			timeScale = 0.f;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) && !isPause)
 		{
 			timeScale = 1.f;
 
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && !isPause)
 		{
 			timeScale = 2.f;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) && !isPause)
 		{
 			timeScale = 3.f;
 		}
@@ -273,9 +289,9 @@ int main()
 
 
 #pragma region Update
-///////////////////////////////////////////////////////////////
-////////////////////////////Update///////////////////////////// 시간을 이용해 이동량을 조정
-///////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////
+		////////////////////////////Update///////////////////////////// 시간을 이용해 이동량을 조정
+		///////////////////////////////////////////////////////////////
 		if (time > beeChangeTime)
 		{
 			sf::Transform rotation;
@@ -318,20 +334,22 @@ int main()
 
 		if (cloudPos1.x < 0)
 		{
-			cloudPos1.x += 1920 + textureCloud.getSize().x;
+			ResetCloudInfo(spriteCloud1, textureCloud, cloudPos1, cloudSpeed1);
+			/*cloudPos1.x += vm.width + textureCloud.getSize().x;
 			cloudSpeed1 = (rand() % 101) + 200;
-			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));
+			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));*/
 
 		}
 		if (cloudPos2.x < 0)
 		{
-			cloudPos2.x += 1920 + textureCloud.getSize().x;
+			ResetCloudInfo(spriteCloud2, textureCloud, cloudPos2, cloudSpeed2);
+			/*cloudPos2.x += vm.width + textureCloud.getSize().x;
 			cloudSpeed2 = (rand() % 101) + 200;
-			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));
+			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));*/
 		}
 		if (cloudPos3.x < 0)
 		{
-			cloudPos3.x += 1920 + textureCloud.getSize().x;
+			cloudPos3.x += vm.width + textureCloud.getSize().x;
 			cloudSpeed3 = (rand() % 101) + 200;
 			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));
 		}
@@ -344,9 +362,9 @@ int main()
 
 
 #pragma region Draw
-///////////////////////////////////////////////////////////////
-/////////////////////////////Draw//////////////////////////////
-///////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////
+		/////////////////////////////Draw//////////////////////////////
+		///////////////////////////////////////////////////////////////
 		window.draw(spriteBackground);
 		window.draw(spriteCloud1);
 		window.draw(spriteCloud2);
@@ -357,15 +375,15 @@ int main()
 
 		if (isPause)
 		{
-			if (isGameover)
-			{
-				timeScale = isGameover ? 0.f : 1.f;
-				window.draw(textGameover);
-			}
 			window.draw(textMessage);
 		}
 		window.draw(timeBar);
 
+		if (isGameover)
+		{
+			timeScale = 0.f;
+			window.draw(textGameover);
+		}
 #pragma endregion
 
 		window.display();

@@ -33,3 +33,9 @@ sf::Vector2f Utils::GetRandomVector2(float start, float end)
 	float randVal = (rand() % ((int)(end * 100) - (int)(start*100))) + start * 100;
 	return sf::Vector2f(randVal / 100, randVal / 100);
 }
+
+
+float Utils::GetRandomAngle()
+{
+	return (float)(rand() / RAND_MAX) * 360.f;
+}
