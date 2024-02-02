@@ -33,7 +33,3 @@ SFML-2.6.1/doc/
 SFML-2.6.1/examples/
 SFML-2.6.1/license.md
 SFML-2.6.1/readme.md
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln

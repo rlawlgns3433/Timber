@@ -26,3 +26,10 @@ void Utils::SetOrigin(sf::Shape& obj, Origins originPreset)
 {
 	SetOrigin(obj, originPreset, obj.getLocalBounds());
 }
+
+// 두 Random 값은 같음
+sf::Vector2f Utils::GetRandomVector2(float start, float end)
+{
+	float randVal = (rand() % ((int)(end * 100) - (int)(start*100))) + start * 100;
+	return sf::Vector2f(randVal / 100, randVal / 100);
+}

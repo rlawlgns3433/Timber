@@ -20,6 +20,8 @@ float GetRandomAngle()
 	return (float)(rand() / RAND_MAX) * 360.f;
 }
 
+
+
 int main()
 {
 	srand(time(NULL));
@@ -278,11 +280,9 @@ int main()
 		{
 			sf::Transform rotation;
 			float zeroToOne = (float)rand() / RAND_MAX; // 0.0 ~ 1.0
-			float angle = zeroToOne * 360.f; // 0.0 ~ 360.0
+			float angle = zeroToOne * 360.f; // 0.0 ~ 360.0			
 
-			
-
-			rotation.rotate(angle);
+			rotation.rotate(angle); // rotation.rotate(GetRandomAngle());
 			beeDirection = rotation * beeDirection;
 
 			if (beeDirection.x > 0.f)
@@ -315,20 +315,25 @@ int main()
 		cloudPos2 += cloudDirection2 * cloudSpeed2 * deltaTime;
 		cloudPos3 += cloudDirection3 * cloudSpeed3 * deltaTime;
 
+
 		if (cloudPos1.x < 0)
 		{
 			cloudPos1.x += 1920 + textureCloud.getSize().x;
 			cloudSpeed1 = (rand() % 101) + 200;
+			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));
+
 		}
 		if (cloudPos2.x < 0)
 		{
 			cloudPos2.x += 1920 + textureCloud.getSize().x;
 			cloudSpeed2 = (rand() % 101) + 200;
+			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));
 		}
 		if (cloudPos3.x < 0)
 		{
 			cloudPos3.x += 1920 + textureCloud.getSize().x;
 			cloudSpeed3 = (rand() % 101) + 200;
+			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));
 		}
 		spriteCloud1.setPosition(cloudPos1); // 그릴 위치를 정하기
 		spriteCloud2.setPosition(cloudPos2); // 그릴 위치를 정하기
