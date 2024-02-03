@@ -18,8 +18,8 @@ sf::Vector2f& RandomRotation(sf::Vector2f& v)
 // Framework 추가
 float GetRandomAngle()
 {
-	return (float)(rand() / RAND_MAX) * 360.f;
-}
+	return (float)rand() / RAND_MAX * 360.f;
+}		   
 
 // Framework 추가
 float GetRandomSpeed()
@@ -28,11 +28,11 @@ float GetRandomSpeed()
 }
 
 
-void ResetCloudInfo(sf::Sprite& const spriteCloud, sf::Texture& cloudTexture, sf::Vector2f& cloudPos, float cloudSpeed)
+void ResetCloudInfo(sf::Sprite& const spriteCloud, sf::Texture& cloudTexture, sf::Vector2f& cloudPos, float& cloudSpeed)
 {
-	cloudPos.x += 1920 + cloudTexture.getSize().x;
-	cloudSpeed = (rand() % 101) + 200;
-	spriteCloud.setScale(Utils::GetRandomVector2(0.7f, 1.f));
+	cloudPos.x = rand() % 1920;// 다시 나타나는 위치
+	cloudSpeed = rand() % 2 ? (rand() % 201) + 100 : (rand() % 201) - 300;
+	spriteCloud.setScale(Utils::GetRandomVector2(0.7f, 1.f)); // 크기
 }
 
 
@@ -42,7 +42,7 @@ int main()
 	srand(time(NULL));
 
 	sf::VideoMode vm(1920, 1080);
-	sf::RenderWindow window(vm, "Timber!", sf::Style::Default); // 타이틀을 제외한 초기 사이즈, 타이틀
+	sf::RenderWindow window(vm, "Timber", sf::Style::Default); // 타이틀을 제외한 초기 사이즈, 타이틀
 
 	// 이미지를 담는다.
 	sf::Texture textureBackground;
@@ -76,7 +76,7 @@ int main()
 	Utils::SetOrigin(timeBar, Origins::MC);
 	timeBar.setPosition(vm.width / 2, vm.height - 90);
 
-	float timeBarDuration = 1.f; // N초만에 timeBar가 줄어든다.
+	float timeBarDuration = 5.f; // N초만에 timeBar가 줄어든다.
 	float timeBarSpeed = -timeBarSize.x / timeBarDuration; // timeBar가 감소하기 때문에 음수
 
 	textMessage.setFont(font);
@@ -196,7 +196,7 @@ int main()
 					break;
 				}
 
-				else if (event.key.code == sf::Keyboard::A)
+				else if (event.key.code == sf::Keyboard::A && !isPause && !isGameover)
 				{
 					// 시간이 0이면 게임오버 메시지 & Pause
 					// timebar 시간 추가(A 키), 최소 시간(음수 불가) 문제 해결
@@ -214,8 +214,8 @@ int main()
 						timeScale = 1.f;
 						isGameover = false;
 						score = 0;
+						timeBarCurrentSize = timeBarSize;
 					}
-					timeBarCurrentSize = timeBarSize;
 					break;
 				}
 				else if (event.key.code == sf::Keyboard::Space)
@@ -292,13 +292,13 @@ int main()
 		///////////////////////////////////////////////////////////////
 		////////////////////////////Update///////////////////////////// 시간을 이용해 이동량을 조정
 		///////////////////////////////////////////////////////////////
+		sf::Transform rotation;
+
 		if (time > beeChangeTime)
 		{
-			sf::Transform rotation;
-			float zeroToOne = (float)rand() / RAND_MAX; // 0.0 ~ 1.0
-			float angle = zeroToOne * 360.f; // 0.0 ~ 360.0			
-
-			rotation.rotate(angle); // rotation.rotate(GetRandomAngle());
+			//float zeroToOne = (float)rand() / RAND_MAX; // 0.0 ~ 1.0
+			//float angle = zeroToOne * 360.f; // 0.0 ~ 360.0			
+			rotation.rotate(GetRandomAngle());
 			beeDirection = rotation * beeDirection;
 
 			if (beeDirection.x > 0.f)
@@ -311,6 +311,8 @@ int main()
 			}
 			beeChangeTime = time + beeDirChangeDuration;
 		}
+
+
 		timeBar.setSize(timeBarCurrentSize);
 		timeBarCurrentSize.x += timeBarSpeed * deltaTime;
 		if (timeBarCurrentSize.x <= 0)
@@ -318,10 +320,14 @@ int main()
 			isGameover = true;
 		}
 
-
-
 		sf::Vector2f beePos = spriteBee.getPosition();
 		beePos += beeDirection * beeSpeed * deltaTime; // (변위)d = vt 
+		while (beePos.x < 0 || beePos.x > 1920 || beePos.y < vm.height * 0.3 || beePos.y > vm.height * 0.9)
+		{
+			rotation.rotate(GetRandomAngle());
+			beeDirection = rotation * beeDirection;
+			beePos += beeDirection * beeSpeed * deltaTime; // (변위)d = vt 
+		}
 		spriteBee.setPosition(beePos);
 
 		sf::Vector2f cloudPos1 = spriteCloud1.getPosition();
@@ -332,26 +338,18 @@ int main()
 		cloudPos3 += cloudDirection3 * cloudSpeed3 * deltaTime;
 
 
-		if (cloudPos1.x < 0)
+		if (cloudPos1.x < 0 || cloudPos1.x > vm.width + textureCloud.getSize().x)
 		{
 			ResetCloudInfo(spriteCloud1, textureCloud, cloudPos1, cloudSpeed1);
-			/*cloudPos1.x += vm.width + textureCloud.getSize().x;
-			cloudSpeed1 = (rand() % 101) + 200;
-			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));*/
 
 		}
-		if (cloudPos2.x < 0)
+		if (cloudPos2.x < 0 || cloudPos2.x > vm.width + textureCloud.getSize().x)
 		{
 			ResetCloudInfo(spriteCloud2, textureCloud, cloudPos2, cloudSpeed2);
-			/*cloudPos2.x += vm.width + textureCloud.getSize().x;
-			cloudSpeed2 = (rand() % 101) + 200;
-			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));*/
 		}
-		if (cloudPos3.x < 0)
+		if (cloudPos3.x < 0 || cloudPos3.x > vm.width + textureCloud.getSize().x)
 		{
-			cloudPos3.x += vm.width + textureCloud.getSize().x;
-			cloudSpeed3 = (rand() % 101) + 200;
-			spriteCloud1.setScale(Utils::GetRandomVector2(0.7f, 1.f));
+			ResetCloudInfo(spriteCloud3, textureCloud, cloudPos3, cloudSpeed3);
 		}
 		spriteCloud1.setPosition(cloudPos1); // 그릴 위치를 정하기
 		spriteCloud2.setPosition(cloudPos2); // 그릴 위치를 정하기
