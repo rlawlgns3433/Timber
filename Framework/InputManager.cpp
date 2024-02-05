@@ -1,11 +1,9 @@
 #include "InputManager.h"
 #include <algorithm>
 
-std::unordered_map<sf::Keyboard::Key, bool> InputManager::downKeyMap;
-std::unordered_map<sf::Keyboard::Key, bool> InputManager::upKeyMap;
-std::unordered_map<sf::Keyboard::Key, bool> InputManager::ingKeyMap;
-
-
+std::list<sf::Keyboard::Key> InputManager::downList; // static 변수 초기화
+std::list<sf::Keyboard::Key> InputManager::upList; // ...
+std::list<sf::Keyboard::Key> InputManager::ingList; // ...
 
 void InputManager::UpdateEvent(const sf::Event& event)
 {
@@ -16,18 +14,14 @@ void InputManager::UpdateEvent(const sf::Event& event)
 		// ingList에 없는 경우가 필요하다.
 		if (!GetKey(event.key.code))
 		{
-			//downKeyMap[(sf::Keyboard::Key)EncryptKey(event.key.code)] = true;
-			//ingKeyMap[(sf::Keyboard::Key)EncryptKey(event.key.code)] = true;
-			downKeyMap[event.key.code] = true;
-			ingKeyMap[event.key.code] = true;
+			ingList.push_back(event.key.code);
+			downList.push_back(event.key.code);
 		}
 		break;
 
 	case sf::Event::KeyReleased:
-		//ingKeyMap[(sf::Keyboard::Key)EncryptKey(event.key.code)] = false;
-		//upKeyMap[(sf::Keyboard::Key)EncryptKey(event.key.code)] = true;
-		ingKeyMap[event.key.code] = false;
-		upKeyMap[event.key.code] = true;
+		ingList.remove(event.key.code);
+		upList.push_back(event.key.code);
 		break;
 
 	default:
@@ -37,51 +31,23 @@ void InputManager::UpdateEvent(const sf::Event& event)
 
 void InputManager::Clear()
 {
-	downKeyMap.clear();
-	upKeyMap.clear();
+	downList.clear();
+	upList.clear();
 }
+
+// GET 함수들을 모두 최적화 필요 (가능하면 hashmap)
 
 bool InputManager::GetKeyDown(sf::Keyboard::Key key)
 {
-	//return downKeyMap[(sf::Keyboard::Key)EncryptKey(key)];
-	return downKeyMap[key];
+	return std::find(downList.begin(), downList.end(), key) != downList.end(); // 탐색
 }
 
 bool InputManager::GetKeyUp(sf::Keyboard::Key key)
 {
-	//return upKeyMap[(sf::Keyboard::Key)EncryptKey(key)];
-	return upKeyMap[key];
-
+	return std::find(upList.begin(), upList.end(), key) != upList.end(); // 탐색
 }
 
 bool InputManager::GetKey(sf::Keyboard::Key key)
 {
-	//return ingKeyMap[(sf::Keyboard::Key)EncryptKey(key)];
-	return ingKeyMap[key];
+	return std::find(ingList.begin(), ingList.end(), key) != ingList.end(); // 탐색
 }
-
-
-
-
-
-//int InputManager::EncryptKey(sf::Keyboard::Key key)
-//{
-//	int p = Utils::GenerateRandomPrime();
-//	int q = Utils::GenerateRandomPrime();
-//	int n = p * q;
-//	int z = (p - 1) * (q - 1);
-//	int e = Utils::GetPublicKeyExponent(z);
-//	int d = Utils::GetPrivateKeyExponent(e, z);
-//	return Utils::Encrypt((int)key, e, n);
-//}
-//
-//sf::Keyboard::Key InputManager::DecryptKey(int cipherText)
-//{
-//	int p = Utils::GenerateRandomPrime();
-//	int q = Utils::GenerateRandomPrime();
-//	int n = p * q;
-//	int z = (p - 1) * (q - 1);
-//	int e = Utils::GetPublicKeyExponent(z);
-//	int d = Utils::GetPrivateKeyExponent(e, z);
-//	return (sf::Keyboard::Key)(Utils::Decrypt(cipherText, d, n));
-//}
