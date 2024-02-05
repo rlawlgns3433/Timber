@@ -4,37 +4,19 @@
 #include <cstdlib>
 #include <sstream>
 #include "Framework/Utils.h"
+#include "Framework/InputManager.h"
 
-sf::Vector2f& RandomRotation(sf::Vector2f& v)
-{
-	sf::Transform rotation;
-	float zeroToOne = (float)rand() / RAND_MAX; // 0.0 ~ 1.0
-	float angle = zeroToOne * 360.f; // 0.0 ~ 360.0
-	rotation.rotate(angle);
-
-	return v;
-}
-
+sf::Vector2f& RandomRotation(sf::Vector2f& v);
 // Framework 추가
-float GetRandomAngle()
-{
-	return (float)rand() / RAND_MAX * 360.f;
-}		   
-
+float GetRandomAngle();
 // Framework 추가
-float GetRandomSpeed()
-{
-	return (float)rand() / RAND_MAX * 100 + 200;
-}
+float GetRandomSpeed();
+void ResetCloudInfo(sf::Sprite& const spriteCloud, sf::Texture& cloudTexture, sf::Vector2f& cloudPos, float& cloudSpeed);
+void UpdateBranches();
 
-
-void ResetCloudInfo(sf::Sprite& const spriteCloud, sf::Texture& cloudTexture, sf::Vector2f& cloudPos, float& cloudSpeed)
-{
-	cloudPos.x = rand() % 1920;// 다시 나타나는 위치
-	cloudSpeed = rand() % 2 ? (rand() % 201) + 100 : (rand() % 201) - 300;
-	spriteCloud.setScale(Utils::GetRandomVector2(0.7f, 1.f)); // 크기
-}
-
+const int NUM_OF_BRANCHES = 6;
+sf::Sprite spriteBranches[NUM_OF_BRANCHES];
+Sides branchSides[NUM_OF_BRANCHES];
 
 
 int main()
@@ -49,6 +31,9 @@ int main()
 	sf::Texture textureCloud;
 	sf::Texture textureBee;
 	sf::Texture textureTree;
+	sf::Texture textureBranch;
+	sf::Texture texturePlayer;
+	sf::Texture textureAxe;
 
 	// 이미지를 통해 실제로 그릴 객체
 	sf::Sprite spriteBackground;
@@ -57,6 +42,8 @@ int main()
 	sf::Sprite spriteCloud3;
 	sf::Sprite spriteBee;
 	sf::Sprite spriteTree;
+	sf::Sprite spritePlayer;
+	sf::Sprite spriteAxe;
 
 	// 폰트
 	sf::Font font;
@@ -76,8 +63,39 @@ int main()
 	Utils::SetOrigin(timeBar, Origins::MC);
 	timeBar.setPosition(vm.width / 2, vm.height - 90);
 
-	float timeBarDuration = 5.f; // N초만에 timeBar가 줄어든다.
+	float timeBarDuration = 500.f; // N초만에 timeBar가 줄어든다.
 	float timeBarSpeed = -timeBarSize.x / timeBarDuration; // timeBar가 감소하기 때문에 음수
+
+	// 보통 속력, 방향을 나눠서 계산한다.
+	float beeSpeed = 200.f; // 속력
+	sf::Vector2f beeDirection(1.f, 0.f); // x축 단위 벡터 -> 방향
+	spriteBee.setScale(-1.f, 1.f);
+
+	float cloudSpeed2 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
+	float cloudSpeed1 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
+	float cloudSpeed3 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
+
+	sf::Vector2f cloudDirection1(-1.f, 0.f); // x축 단위 벡터 -> 방향
+	sf::Vector2f cloudDirection2(-1.f, 0.f); // x축 단위 벡터 -> 방향
+	sf::Vector2f cloudDirection3(-1.f, 0.f); // x축 단위 벡터 -> 방향
+
+	unsigned long long score = 0;
+	float span2 = 5.f;
+	float time = 0.f;
+	float deltaTime = 0.f;
+
+	float realTime = 0.f;
+	float realDeltaTime = 0.f;
+
+	bool isPause = true;
+	bool isGameover = false;
+
+	float timeScale = isPause ? 0.f : 1.f;
+	float beeLastTime = 0.f;
+	float beeDirChangeDuration = 1.f;
+	float beeChangeTime = beeDirChangeDuration;
+
+	sf::Clock clock;
 
 	textMessage.setFont(font);
 	textMessage.setString("Press Enter to Start!");
@@ -105,6 +123,9 @@ int main()
 	textureCloud.loadFromFile("graphics/cloud.png");
 	textureBee.loadFromFile("graphics/bee.png");
 	textureTree.loadFromFile("graphics/Tree.png");
+	textureBranch.loadFromFile("graphics/branch.png");
+	texturePlayer.loadFromFile("graphics/player.png");
+	textureAxe.loadFromFile("graphics/axe.png");
 
 
 	spriteBackground.setTexture(textureBackground); // 텍스쳐 적용하기
@@ -131,46 +152,71 @@ int main()
 
 	//spriteBee.getGlobalBounds(); // 월드 좌표 좌상단이 (0,0)인 사각형
 
-
 	spriteTree.setTexture(textureTree); // 텍스쳐 적용하기
 	spriteTree.setPosition(vm.width * 0.5f, 0); // 그릴 위치를 정하기
 	spriteTree.setOrigin(textureTree.getSize().x * 0.5f, 0);
 
-	// 보통 속력, 방향을 나눠서 계산한다.
-	float beeSpeed = 200.f; // 속력
-	sf::Vector2f beeDirection(1.f, 0.f); // x축 단위 벡터 -> 방향
-	spriteBee.setScale(-1.f, 1.f);
+	for (int i = 0; i < NUM_OF_BRANCHES; ++i)
+	{
+		spriteBranches[i].setTexture(textureBranch);
+		spriteBranches[i].setPosition(-2000, -2000);
+		Utils::SetOrigin(spriteBranches[i], Origins::ML);
+	}
 
-	float cloudSpeed2 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
-	float cloudSpeed1 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
-	float cloudSpeed3 = GetRandomSpeed();// (rand() % 200 + 100); 100 ~ 300
+	for (int i = 0; i < NUM_OF_BRANCHES; ++i)
+	{
+		branchSides[i] = (Sides)(rand() % 3);
+	}
 
-	sf::Vector2f cloudDirection1(-1.f, 0.f); // x축 단위 벡터 -> 방향
-	sf::Vector2f cloudDirection2(-1.f, 0.f); // x축 단위 벡터 -> 방향
-	sf::Vector2f cloudDirection3(-1.f, 0.f); // x축 단위 벡터 -> 방향
+	sf::Vector2f playerPos[2] = 
+	{ 
+		{
+		vm.width * 0.5f - 300,
+		spriteTree.getLocalBounds().height
+		},
+		{
+		vm.width * 0.5f + 300,
+		spriteTree.getLocalBounds().height
+		}
+	};
 
-	unsigned long long score = 0;
-	float span2 = 5.f;
-	float time = 0.f;
-	float deltaTime = 0.f;
+	sf::Vector2f axePos[2] =
+	{
+		{
+		vm.width * 0.5f - 100,
+		spriteTree.getLocalBounds().height - 100
+		},
+		{
+		vm.width * 0.5f + 100,
+		spriteTree.getLocalBounds().height - 100
+		}
+	};
 
-	float realTime = 0.f;
-	float realDeltaTime = 0.f;
+	sf::Vector2f playerScale[2] =
+	{
+		{-1.f, 1.f},
+		{1.f, 1.f}
+	};
 
-	bool isPause = false;
-	bool isGameover = false;
+	Sides playerSides = Sides::RIGHT;
 
-	float timeScale = isPause ? 0.f : 1.f;
-	float beeLastTime = 0.f;
-	float beeDirChangeDuration = 1.f;
-	float beeChangeTime = beeDirChangeDuration;
+	spritePlayer.setTexture(texturePlayer);
+	Utils::SetOrigin(spritePlayer, Origins::BC);
+	spritePlayer.setPosition(playerPos[(int)playerSides]);
 
-	sf::Clock clock;
+
+	spriteAxe.setTexture(textureAxe);
+	spriteAxe.setScale(playerScale[(int)playerSides]);
+	spriteAxe.setPosition(axePos[(int)playerSides]);
+
+
 	///////////////////////////////////////////////////////////////
 	///////////////////////////main loop///////////////////////////
 	///////////////////////////////////////////////////////////////
 	while (window.isOpen())
 	{
+		InputManager::Clear(); // InputManager Clear()
+
 		sf::Time dt = clock.restart();
 		realDeltaTime = dt.asSeconds();
 		realTime += deltaTime;
@@ -183,6 +229,8 @@ int main()
 		// 이벤트는 Message Queue에 쌓이게 된다. 
 		while (window.pollEvent(event)) // message loop
 		{
+			InputManager::UpdateEvent(event); // InputManager UpdateEvent
+
 			switch (event.type)
 			{
 			case sf::Event::Closed:
@@ -218,7 +266,7 @@ int main()
 					}
 					break;
 				}
-				else if (event.key.code == sf::Keyboard::Space)
+				else if (event.key.code == sf::Keyboard::P)
 				{
 					if (!isGameover)
 					{
@@ -242,29 +290,6 @@ int main()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) // ESC가 눌렸을 때 동작
 		{
 			window.close();
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) // Left가 눌렸을 때 동작
-		{
-			beeDirection = sf::Vector2f(-1.0f, 0.0f);
-			spriteBee.setScale(1.f, 1.f);
-
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) // Right가 눌렸을 때 동작
-		{
-			beeDirection = sf::Vector2f(1.0f, 0.0f);
-			spriteBee.setScale(-1.f, 1.f);
-
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) // Right가 눌렸을 때 동작
-		{
-			beeSpeed += 1.f;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) // Right가 눌렸을 때 동작
-		{
-			if (beeSpeed > 2)
-			{
-				beeSpeed -= 1.f;
-			}
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0) && !isPause)
@@ -293,6 +318,32 @@ int main()
 		////////////////////////////Update///////////////////////////// 시간을 이용해 이동량을 조정
 		///////////////////////////////////////////////////////////////
 		sf::Transform rotation;
+
+		if (InputManager::GetKeyDown(sf::Keyboard::Enter))
+		{
+			isPause = !isPause;
+			timeScale = isPause ? 0.f : 1.f;
+		}
+
+		Sides prevPlayerSide = playerSides;
+
+		if (InputManager::GetKeyDown(sf::Keyboard::Left) && !isPause && !isGameover)
+		{
+			playerSides = Sides::LEFT;
+		}
+		else if (InputManager::GetKeyDown(sf::Keyboard::Right) && !isPause && !isGameover)
+		{
+			playerSides = Sides::RIGHT;
+		}
+
+		if (prevPlayerSide != playerSides) // 변했을 때만 호출
+		{
+			spritePlayer.setPosition(playerPos[(int)playerSides]);
+			spritePlayer.setScale(playerScale[(int)playerSides]);
+			spriteAxe.setPosition(axePos[(int)playerSides]);
+			spriteAxe.setScale(playerScale[(int)playerSides]);
+		}
+
 
 		if (time > beeChangeTime)
 		{
@@ -351,9 +402,39 @@ int main()
 		{
 			ResetCloudInfo(spriteCloud3, textureCloud, cloudPos3, cloudSpeed3);
 		}
+
 		spriteCloud1.setPosition(cloudPos1); // 그릴 위치를 정하기
 		spriteCloud2.setPosition(cloudPos2); // 그릴 위치를 정하기
 		spriteCloud3.setPosition(cloudPos3); // 그릴 위치를 정하기
+
+		float treeHalfWidth = spriteTree.getLocalBounds().width * 0.5f;
+
+		if (InputManager::GetKeyDown(sf::Keyboard::Space) && !isPause && !isGameover)
+		{
+			UpdateBranches();
+		}
+
+		for (int i = 0; i < NUM_OF_BRANCHES; ++i)
+		{
+			float y = i * 150.f;
+			float centerX = vm.width * 0.5f;
+
+			switch (branchSides[i])
+			{
+			case Sides::LEFT :
+				spriteBranches[i].setScale(-1.f, 1.f);
+				spriteBranches[i].setPosition(centerX - treeHalfWidth, y);
+				break;
+
+			case Sides::RIGHT:
+				spriteBranches[i].setScale(1.f, 1.f);
+				spriteBranches[i].setPosition(centerX + treeHalfWidth, y);
+				break;
+			default:
+				spriteBranches[i].setPosition(-2000,-2000);
+				break;
+			}
+		}
 
 
 #pragma endregion
@@ -367,7 +448,15 @@ int main()
 		window.draw(spriteCloud1);
 		window.draw(spriteCloud2);
 		window.draw(spriteCloud3);
+
+		// Tree, Branch Layer
 		window.draw(spriteTree);
+		for (int i = 0; i < NUM_OF_BRANCHES; ++i)
+		{
+			window.draw(spriteBranches[i]);
+		}
+		window.draw(spritePlayer);
+		window.draw(spriteAxe);
 		window.draw(spriteBee);
 		window.draw(textScore);
 
@@ -389,4 +478,58 @@ int main()
 
 	return 0;
 
+}
+
+void UpdateBranches()
+{
+	for (int i = NUM_OF_BRANCHES - 1; i > 0; --i)
+	{
+		branchSides[i] = branchSides[i - 1];
+	}
+
+	float value = (float)(rand() / RAND_MAX);
+
+	int side = rand() % 5;
+	switch (side)
+	{
+	case 0 : 
+		branchSides[0] = Sides::LEFT;
+		break;
+	case 1 : 
+		branchSides[0] = Sides::RIGHT;
+		break;
+	default:
+		branchSides[0] = Sides::NONE;
+		break;
+	}
+}
+
+sf::Vector2f& RandomRotation(sf::Vector2f& v)
+{
+	sf::Transform rotation;
+	float zeroToOne = (float)rand() / RAND_MAX; // 0.0 ~ 1.0
+	float angle = zeroToOne * 360.f; // 0.0 ~ 360.0
+	rotation.rotate(angle);
+
+	return v;
+}
+
+// Framework 추가
+float GetRandomAngle()
+{
+	return (float)rand() / RAND_MAX * 360.f;
+}
+
+// Framework 추가
+float GetRandomSpeed()
+{
+	return (float)rand() / RAND_MAX * 100 + 200;
+}
+
+
+void ResetCloudInfo(sf::Sprite& const spriteCloud, sf::Texture& cloudTexture, sf::Vector2f& cloudPos, float& cloudSpeed)
+{
+	cloudPos.x = rand() % 1920;// 다시 나타나는 위치
+	cloudSpeed = rand() % 2 ? (rand() % 201) + 100 : (rand() % 201) - 300;
+	spriteCloud.setScale(Utils::GetRandomVector2(0.7f, 1.f)); // 크기
 }

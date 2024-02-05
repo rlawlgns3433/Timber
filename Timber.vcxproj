@@ -135,11 +135,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Framework\Utils.cpp" />
+    <ClCompile Include="Framework\InputManager.cpp" />
     <ClCompile Include="Timber.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Defines.h" />
     <ClInclude Include="Framework\Utils.h" />
+    <ClInclude Include="Framework\InputManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
