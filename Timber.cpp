@@ -5,6 +5,7 @@
 #include <sstream>
 #include "Framework/Utils.h"
 #include "Framework/InputManager.h"
+#include <cmath>
 
 sf::Vector2f& RandomRotation(sf::Vector2f& v);
 // Framework 추가
@@ -13,11 +14,18 @@ float GetRandomAngle();
 float GetRandomSpeed();
 void ResetCloudInfo(sf::Sprite& const spriteCloud, sf::Texture& cloudTexture, sf::Vector2f& cloudPos, float& cloudSpeed);
 void UpdateBranches();
+void InitGame();
 
 const int NUM_OF_BRANCHES = 6;
+int updateBranchCount = 0;
+unsigned long long score = 0;
 sf::Sprite spriteBranches[NUM_OF_BRANCHES];
 Sides branchSides[NUM_OF_BRANCHES];
+Sides playerSide;
 
+sf::RectangleShape timeBar;
+sf::Vector2f timeBarSize = sf::Vector2f(400.f, 80.f);
+sf::Vector2f timeBarCurrentSize = timeBarSize;
 
 int main()
 {
@@ -55,15 +63,13 @@ int main()
 	sf::Text textGameover;
 
 	// 도형
-	sf::RectangleShape timeBar;
-	sf::Vector2f timeBarSize = sf::Vector2f(400.f, 80.f);
-	sf::Vector2f timeBarCurrentSize = timeBarSize;
+
 	timeBar.setSize((timeBarSize));
 	timeBar.setFillColor(sf::Color::Red);
 	Utils::SetOrigin(timeBar, Origins::MC);
 	timeBar.setPosition(vm.width / 2, vm.height - 90);
 
-	float timeBarDuration = 500.f; // N초만에 timeBar가 줄어든다.
+	float timeBarDuration = 10.f; // N초만에 timeBar가 줄어든다.
 	float timeBarSpeed = -timeBarSize.x / timeBarDuration; // timeBar가 감소하기 때문에 음수
 
 	// 보통 속력, 방향을 나눠서 계산한다.
@@ -79,7 +85,6 @@ int main()
 	sf::Vector2f cloudDirection2(-1.f, 0.f); // x축 단위 벡터 -> 방향
 	sf::Vector2f cloudDirection3(-1.f, 0.f); // x축 단위 벡터 -> 방향
 
-	unsigned long long score = 0;
 	float span2 = 5.f;
 	float time = 0.f;
 	float deltaTime = 0.f;
@@ -112,7 +117,7 @@ int main()
 	Utils::SetOrigin(textScore, Origins::TL);
 
 	textGameover.setFont(font);
-	textGameover.setString("Gameover!");
+	textGameover.setString("Game Over. Press Enter to Restart!");
 	textGameover.setCharacterSize(75);
 	textGameover.setFillColor(sf::Color::White);
 	textGameover.setPosition(vm.width / 2, vm.height / 2);
@@ -163,10 +168,10 @@ int main()
 		Utils::SetOrigin(spriteBranches[i], Origins::ML);
 	}
 
-	for (int i = 0; i < NUM_OF_BRANCHES; ++i)
-	{
-		branchSides[i] = (Sides)(rand() % 3);
-	}
+
+	InitGame();
+
+
 
 	sf::Vector2f playerPos[2] = 
 	{ 
@@ -179,16 +184,16 @@ int main()
 		spriteTree.getLocalBounds().height
 		}
 	};
-
+	
 	sf::Vector2f axePos[2] =
 	{
 		{
 		vm.width * 0.5f - 100,
-		spriteTree.getLocalBounds().height - 100
+		spriteTree.getLocalBounds().height - 90
 		},
 		{
 		vm.width * 0.5f + 100,
-		spriteTree.getLocalBounds().height - 100
+		spriteTree.getLocalBounds().height - 90
 		}
 	};
 
@@ -237,24 +242,7 @@ int main()
 				window.close();
 				break;
 			case sf::Event::KeyReleased: // 키 입력
-				if (event.key.code == sf::Keyboard::LControl && !isPause && !isGameover)
-				{
-					score += 10;
-					textScore.setString("Score : " + std::to_string(score));
-					break;
-				}
-
-				else if (event.key.code == sf::Keyboard::A && !isPause && !isGameover)
-				{
-					// 시간이 0이면 게임오버 메시지 & Pause
-					// timebar 시간 추가(A 키), 최소 시간(음수 불가) 문제 해결
-					if (timeBarCurrentSize.x - timeBarSpeed <= timeBarSize.x)
-					{
-						timeBarCurrentSize.x += -timeBarSpeed;
-					}
-					break;
-				}
-				else if (event.key.code == sf::Keyboard::Return)
+				if (event.key.code == sf::Keyboard::Return)
 				{
 					if (isPause) break; // pause일 떄 return 하면 아무 것도 실행되지 않음
 					if (isGameover)
@@ -263,6 +251,7 @@ int main()
 						isGameover = false;
 						score = 0;
 						timeBarCurrentSize = timeBarSize;
+						InitGame();
 					}
 					break;
 				}
@@ -319,30 +308,69 @@ int main()
 		///////////////////////////////////////////////////////////////
 		sf::Transform rotation;
 
+
 		if (InputManager::GetKeyDown(sf::Keyboard::Enter))
 		{
-			isPause = !isPause;
-			timeScale = isPause ? 0.f : 1.f;
+			if (!isGameover)
+			{
+				isPause = !isPause;
+				timeScale = isPause ? 0.f : 1.f;
+			}
+			else if (isGameover && (playerSides == branchSides[NUM_OF_BRANCHES - 1] || timeBarCurrentSize.x <= 0))
+			{
+				score = 0;
+				textScore.setString("Score : " + std::to_string(score));
+				InitGame();
+
+			}
 		}
 
-		Sides prevPlayerSide = playerSides;
+		if (!isPause)
+		{
+			bool isMove = false;
+			Sides prevPlayerSide = playerSides;
 
-		if (InputManager::GetKeyDown(sf::Keyboard::Left) && !isPause && !isGameover)
-		{
-			playerSides = Sides::LEFT;
-		}
-		else if (InputManager::GetKeyDown(sf::Keyboard::Right) && !isPause && !isGameover)
-		{
-			playerSides = Sides::RIGHT;
-		}
+			if (InputManager::GetKeyDown(sf::Keyboard::Left) && !isPause && !isGameover)
+			{
+				playerSides = Sides::LEFT;
+				isMove = true;
+				UpdateBranches();
+			}
+			else if (InputManager::GetKeyDown(sf::Keyboard::Right) && !isPause && !isGameover)
+			{
+				playerSides = Sides::RIGHT;
+				isMove = true;
+				UpdateBranches();
+			}
 
-		if (prevPlayerSide != playerSides) // 변했을 때만 호출
-		{
-			spritePlayer.setPosition(playerPos[(int)playerSides]);
-			spritePlayer.setScale(playerScale[(int)playerSides]);
-			spriteAxe.setPosition(axePos[(int)playerSides]);
-			spriteAxe.setScale(playerScale[(int)playerSides]);
+			if (prevPlayerSide != playerSides) // 변했을 때만 호출
+			{
+				spritePlayer.setPosition(playerPos[(int)playerSides]);
+				spritePlayer.setScale(playerScale[(int)playerSides]);
+				spriteAxe.setPosition(axePos[(int)playerSides]);
+				spriteAxe.setScale(playerScale[(int)playerSides]);
+			}
+			if (isMove)
+			{
+				if (branchSides[NUM_OF_BRANCHES - 1] == playerSides)
+				{
+					isGameover = true;
+					textGameover.setString("Game Over. Press Enter to Restart!");
+					Utils::SetOrigin(textGameover, Origins::MC);
+				}
+				else
+				{
+					score += 10;
+					timeBarCurrentSize.x += 50;
+					if (timeBarCurrentSize.x > timeBarSize.x)
+					{
+						timeBarCurrentSize.x = timeBarSize.x;
+					}
+					textScore.setString("Score : " + std::to_string(score));
+				}
+			}
 		}
+		
 
 
 		if (time > beeChangeTime)
@@ -409,10 +437,7 @@ int main()
 
 		float treeHalfWidth = spriteTree.getLocalBounds().width * 0.5f;
 
-		if (InputManager::GetKeyDown(sf::Keyboard::Space) && !isPause && !isGameover)
-		{
-			UpdateBranches();
-		}
+		
 
 		for (int i = 0; i < NUM_OF_BRANCHES; ++i)
 		{
@@ -469,6 +494,7 @@ int main()
 		if (isGameover)
 		{
 			timeScale = 0.f;
+			timeBarCurrentSize.x = 0;
 			window.draw(textGameover);
 		}
 #pragma endregion
@@ -482,6 +508,7 @@ int main()
 
 void UpdateBranches()
 {
+	++updateBranchCount;
 	for (int i = NUM_OF_BRANCHES - 1; i > 0; --i)
 	{
 		branchSides[i] = branchSides[i - 1];
@@ -489,7 +516,7 @@ void UpdateBranches()
 
 	float value = (float)(rand() / RAND_MAX);
 
-	int side = rand() % 5;
+	int side = (updateBranchCount % 2 == 0) ? (int)Sides::NONE : rand() % 5;
 	switch (side)
 	{
 	case 0 : 
@@ -502,6 +529,19 @@ void UpdateBranches()
 		branchSides[0] = Sides::NONE;
 		break;
 	}
+}
+
+void InitGame()
+{
+	for (int i = 0; i < NUM_OF_BRANCHES; ++i)
+	{
+		UpdateBranches();
+	}
+	branchSides[NUM_OF_BRANCHES - 1] = Sides::NONE;
+	branchSides[NUM_OF_BRANCHES - 2] = Sides::NONE;
+	playerSide = Sides::RIGHT;
+
+	timeBarCurrentSize.x = timeBarSize.x;
 }
 
 sf::Vector2f& RandomRotation(sf::Vector2f& v)
