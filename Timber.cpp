@@ -5,6 +5,7 @@
 #include <sstream>
 #include "Framework/Utils.h"
 #include "Framework/InputManager.h"
+#include "Framework/ResourceManager.h"
 #include <cmath>
 
 sf::Vector2f& RandomRotation(sf::Vector2f& v);
@@ -17,7 +18,6 @@ void UpdateBranches();
 void InitGame();
 
 const int NUM_OF_BRANCHES = 6;
-int updateBranchCount = 0;
 unsigned long long score = 0;
 sf::Sprite spriteBranches[NUM_OF_BRANCHES];
 Sides branchSides[NUM_OF_BRANCHES];
@@ -33,6 +33,8 @@ int main()
 
 	sf::VideoMode vm(1920, 1080);
 	sf::RenderWindow window(vm, "Timber", sf::Style::Default); // 타이틀을 제외한 초기 사이즈, 타이틀
+
+	ResourceManager<sf::Texture> textureManager;
 
 	// 이미지를 담는다.
 	sf::Texture textureBackground;
@@ -85,6 +87,23 @@ int main()
 	sf::Vector2f cloudDirection2(-1.f, 0.f); // x축 단위 벡터 -> 방향
 	sf::Vector2f cloudDirection3(-1.f, 0.f); // x축 단위 벡터 -> 방향
 
+	std::string textureBackgroundName = "graphics/background.png";
+	std::string textureCloudName = "graphics/cloud.png";
+	std::string textureBeeName = "graphics/bee.png";
+	std::string textureTreeName = "graphics/tree.png";
+	std::string textureBranchName = "graphics/branch.png";
+	std::string texturePlayerName = "graphics/player.png";
+	std::string textureAxeName = "graphics/axe.png";
+
+	textureManager.Instance().Load(textureBackgroundName);
+	textureManager.Instance().Load(textureCloudName);
+	textureManager.Instance().Load(textureBeeName);
+	textureManager.Instance().Load(textureTreeName);
+	textureManager.Instance().Load(textureBranchName);
+	textureManager.Instance().Load(texturePlayerName);
+	textureManager.Instance().Load(textureAxeName);
+
+
 	float span2 = 5.f;
 	float time = 0.f;
 	float deltaTime = 0.f;
@@ -124,23 +143,23 @@ int main()
 	Utils::SetOrigin(textGameover, Origins::MC);
 
 
-	textureBackground.loadFromFile("graphics/background.png");
-	textureCloud.loadFromFile("graphics/cloud.png");
-	textureBee.loadFromFile("graphics/bee.png");
-	textureTree.loadFromFile("graphics/Tree.png");
-	textureBranch.loadFromFile("graphics/branch.png");
-	texturePlayer.loadFromFile("graphics/player.png");
-	textureAxe.loadFromFile("graphics/axe.png");
+	//textureBackground.loadFromFile("graphics/background.png");
+	//textureCloud.loadFromFile("graphics/cloud.png");
+	//textureBee.loadFromFile("graphics/bee.png");
+	//textureTree.loadFromFile("graphics/Tree.png");
+	//textureBranch.loadFromFile("graphics/branch.png");
+	//texturePlayer.loadFromFile("graphics/player.png");
+	//textureAxe.loadFromFile("graphics/axe.png");
 
 
-	spriteBackground.setTexture(textureBackground); // 텍스쳐 적용하기
+	spriteBackground.setTexture(*textureManager.Instance().GetResource(textureBackgroundName)); // 텍스쳐 적용하기
 	spriteBackground.setPosition(0, 0); // 그릴 위치를 정하기
 
-	spriteCloud1.setTexture(textureCloud); // 텍스쳐 적용하기
+	spriteCloud1.setTexture(*textureManager.Instance().GetResource(textureCloudName)); // 텍스쳐 적용하기
 	spriteCloud1.setPosition(vm.width / 2 - 200, 0); // 그릴 위치를 정하기
-	spriteCloud2.setTexture(textureCloud); // 텍스쳐 적용하기
+	spriteCloud2.setTexture(*textureManager.Instance().GetResource(textureCloudName)); // 텍스쳐 적용하기
 	spriteCloud2.setPosition(vm.width / 2, 50); // 그릴 위치를 정하기
-	spriteCloud3.setTexture(textureCloud); // 텍스쳐 적용하기
+	spriteCloud3.setTexture(*textureManager.Instance().GetResource(textureCloudName)); // 텍스쳐 적용하기
 	spriteCloud3.setPosition(vm.width / 2 + 200, 100); // 그릴 위치를 정하기
 	Utils::SetOrigin(spriteCloud1, Origins::TR); // 중앙으로 Origin 변경
 	Utils::SetOrigin(spriteCloud2, Origins::TR); // 중앙으로 Origin 변경
@@ -148,7 +167,7 @@ int main()
 
 
 
-	spriteBee.setTexture(textureBee); // 텍스쳐 적용하기
+	spriteBee.setTexture(*textureManager.Instance().GetResource(textureBeeName)); // 텍스쳐 적용하기
 	spriteBee.setPosition(vm.width / 2 - 100, 650); // 그릴 위치를 정하기
 	spriteBee.setOrigin(textureBee.getSize().x / 2, textureBee.getSize().y / 2);
 	const sf::FloatRect& boundsBee = spriteBee.getLocalBounds(); // 로컬 좌표 좌상단이 (0,0)인 사각형, Origin 구할 때 사용
@@ -157,13 +176,14 @@ int main()
 
 	//spriteBee.getGlobalBounds(); // 월드 좌표 좌상단이 (0,0)인 사각형
 
-	spriteTree.setTexture(textureTree); // 텍스쳐 적용하기
+	spriteTree.setTexture(*textureManager.Instance().GetResource(textureTreeName)); // 텍스쳐 적용하기
 	spriteTree.setPosition(vm.width * 0.5f, 0); // 그릴 위치를 정하기
-	spriteTree.setOrigin(textureTree.getSize().x * 0.5f, 0);
+	spriteTree.setOrigin((textureManager).Instance().GetResource(textureTreeName)->getSize().x * 0.5f, 0);
+
 
 	for (int i = 0; i < NUM_OF_BRANCHES; ++i)
 	{
-		spriteBranches[i].setTexture(textureBranch);
+		spriteBranches[i].setTexture(*textureManager.Instance().GetResource(textureBranchName));
 		spriteBranches[i].setPosition(-2000, -2000);
 		Utils::SetOrigin(spriteBranches[i], Origins::ML);
 	}
@@ -205,12 +225,12 @@ int main()
 
 	Sides playerSides = Sides::RIGHT;
 
-	spritePlayer.setTexture(texturePlayer);
+	spritePlayer.setTexture(*textureManager.Instance().GetResource(texturePlayerName));
 	Utils::SetOrigin(spritePlayer, Origins::BC);
 	spritePlayer.setPosition(playerPos[(int)playerSides]);
 
 
-	spriteAxe.setTexture(textureAxe);
+	spriteAxe.setTexture(*textureManager.Instance().GetResource(textureAxeName));
 	spriteAxe.setScale(playerScale[(int)playerSides]);
 	spriteAxe.setPosition(axePos[(int)playerSides]);
 
@@ -334,12 +354,15 @@ int main()
 			{
 				playerSides = Sides::LEFT;
 				isMove = true;
+				std::cout << "Lef" << std::endl;
 				UpdateBranches();
 			}
 			else if (InputManager::GetKeyDown(sf::Keyboard::Right) && !isPause && !isGameover)
 			{
 				playerSides = Sides::RIGHT;
 				isMove = true;
+				std::cout << "rig" << std::endl;
+
 				UpdateBranches();
 			}
 
@@ -508,7 +531,6 @@ int main()
 
 void UpdateBranches()
 {
-	++updateBranchCount;
 	for (int i = NUM_OF_BRANCHES - 1; i > 0; --i)
 	{
 		branchSides[i] = branchSides[i - 1];
@@ -516,7 +538,7 @@ void UpdateBranches()
 
 	float value = (float)(rand() / RAND_MAX);
 
-	int side = (updateBranchCount % 2 == 0) ? (int)Sides::NONE : rand() % 5;
+	int side = rand() % 3;
 	switch (side)
 	{
 	case 0 : 
