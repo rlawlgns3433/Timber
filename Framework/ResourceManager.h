@@ -1,15 +1,19 @@
 #pragma once
 #include "Singleton.h"
-#include <memory>
-#include <unordered_map>
 
 template <typename T>
-class ResourceManager : public Singleton<ResourceManager<T>>
+class ResourceManager : public Singleton<ResourceManager<T>> // 템플릿 클래스
 {
 private:
 	std::unordered_map<std::string, T*> resourceMap;
 
 public:
+	ResourceManager(const ResourceManager& ref)				= delete;
+	ResourceManager(ResourceManager&& ref)					= delete;
+	ResourceManager& operator=(const ResourceManager& ref)	= delete;
+	ResourceManager& operator=(ResourceManager&& ref)		= delete;
+
+	static T Empty;
 	ResourceManager() = default;
 	virtual ~ResourceManager()
 	{
@@ -18,7 +22,7 @@ public:
 
 	bool Load(const std::string& filePath) // 리소스 업로드
 	{
-		if (resourceMap.find(filePath) != resourceMap.end())
+		if(resourceMap.find(filePath) != resourceMap.end())
 		{
 			return false;
 		}
@@ -49,7 +53,7 @@ public:
 		{
 			return false;
 		}
-
+		
 		delete it->second;
 		resourceMap.erase(it);
 		return true;
@@ -64,11 +68,8 @@ public:
 
 		return it->second;
 	}
-
-	ResourceManager(const ResourceManager& ref) = delete;
-	ResourceManager(ResourceManager&& ref) = delete;
-
-	ResourceManager& operator=(const ResourceManager& ref) = delete;
-	ResourceManager& operator=(ResourceManager&& ref) = delete;
-
+	
 };
+
+template <typename T>
+T ResourceManager<T>::Empty;  // 정적 변수 초기화

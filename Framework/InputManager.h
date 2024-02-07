@@ -20,6 +20,6 @@ public:
 	static bool GetKeyDown(sf::Keyboard::Key key);
 	static bool GetKeyUp(sf::Keyboard::Key key);
 	static bool GetKey(sf::Keyboard::Key key);
-	static int EncryptKey(sf::Keyboard::Key key);
-	static sf::Keyboard::Key DecryptKey(int cipherText);
+	//static int EncryptKey(sf::Keyboard::Key key);
+	//static sf::Keyboard::Key DecryptKey(int cipherText);
 };
