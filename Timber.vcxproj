@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\GameObjects;.\Framework;.;.\SFML-2.6.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\Framework;.;.\SFML-2.6.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -136,46 +136,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BackgroundBeeGo.cpp" />
+    <ClCompile Include="BackgroundMovingGo.cpp" />
     <ClCompile Include="Framework\GameObject.cpp" />
     <ClCompile Include="Framework\Scene.cpp" />
+    <ClCompile Include="Framework\SceneDev1.cpp" />
+    <ClCompile Include="Framework\SceneDev2.cpp" />
+    <ClCompile Include="Framework\SceneGame.cpp" />
     <ClCompile Include="Framework\SceneManager.cpp" />
+    <ClCompile Include="Framework\SpriteGo.cpp" />
+    <ClCompile Include="Framework\TestGameObject.cpp" />
     <ClCompile Include="Framework\Utils.cpp" />
     <ClCompile Include="Framework\InputManager.cpp" />
-    <ClCompile Include="GameObjects\GameObjectBee.cpp" />
-    <ClCompile Include="GameObjects\GameObjectCloud.cpp" />
-    <ClCompile Include="GameObjects\GameObjectBackground.cpp" />
-    <ClCompile Include="GameObjects\GameObjectTree.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SceneDev1.cpp" />
     <ClCompile Include="SceneDev2.cpp" />
-    <ClCompile Include="GameObjects\TestGameObject.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="timber.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="TimberScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BackgroundBeeGo.h" />
+    <ClInclude Include="BackgroundMovingGo.h" />
     <ClInclude Include="Framework\Defines.h" />
     <ClInclude Include="Framework\GameObject.h" />
     <ClInclude Include="Framework\ResourceManager.h" />
     <ClInclude Include="Framework\Scene.h" />
+    <ClInclude Include="Framework\SceneDev1.h" />
+    <ClInclude Include="Framework\SceneDev2.h" />
+    <ClInclude Include="Framework\SceneGame.h" />
     <ClInclude Include="Framework\SceneManager.h" />
     <ClInclude Include="Framework\Singleton.h" />
+    <ClInclude Include="Framework\SpriteGo.h" />
+    <ClInclude Include="Framework\TestGameObject.h" />
     <ClInclude Include="Framework\Utils.h" />
     <ClInclude Include="Framework\InputManager.h" />
-    <ClInclude Include="GameObjects\GameObjectBee.h" />
-    <ClInclude Include="GameObjects\GameObjectCloud.h" />
-    <ClInclude Include="GameObjects\GameObjectBackground.h" />
-    <ClInclude Include="GameObjects\GameObjectTree.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SceneDev1.h" />
     <ClInclude Include="SceneDev2.h" />
-    <ClInclude Include="GameObjects\TestGameObject.h" />
-    <ClInclude Include="TimberScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

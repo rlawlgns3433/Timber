@@ -1,4 +1,3 @@
-#include <ctime>
 #include "Utils.h"
 #include "Defines.h"
 #include "pch.h"
@@ -12,7 +11,21 @@
 //int Utils::d = Utils::GetPrivateKeyExponent(e, z);
 
 
-void Utils::SetOrigin(sf::Transformable& obj, Origins originPreset, const sf::FloatRect& rect)
+float Utils::RandomValue()
+{
+	return (float)rand() / RAND_MAX;
+}
+
+float Utils::RandomRange(float min, float max)
+{
+	float value = RandomValue();
+	value *= (max - min);
+	value += min;
+
+	return value;
+}
+
+sf::Vector2f Utils::SetOrigin(sf::Transformable& obj, Origins originPreset, const sf::FloatRect& rect)
 {
 	// Rect width, height
 
@@ -20,22 +33,24 @@ void Utils::SetOrigin(sf::Transformable& obj, Origins originPreset, const sf::Fl
 	newOrigin.x *= ((int)originPreset % 3) * 0.5f; // 0 1 2 => 0 0.5 1
 	newOrigin.y *= ((int)originPreset / 3) * 0.5f; // 0 1 2 => 0 0.5 1
 	obj.setOrigin(newOrigin);
+
+	return newOrigin;
 }
 
-void Utils::SetOrigin(sf::Sprite& obj, Origins originPreset)
+sf::Vector2f Utils::SetOrigin(sf::Sprite& obj, Origins originPreset)
 {
-	SetOrigin(obj, originPreset, obj.getLocalBounds());
+	return SetOrigin(obj, originPreset, obj.getLocalBounds());
 }
 
-void Utils::SetOrigin(sf::Text& obj, Origins originPreset)
+sf::Vector2f Utils::SetOrigin(sf::Text& obj, Origins originPreset)
 {
-	SetOrigin(obj, originPreset, obj.getLocalBounds());
+	return SetOrigin(obj, originPreset, obj.getLocalBounds());
 
 }
 
-void Utils::SetOrigin(sf::Shape& obj, Origins originPreset)
+sf::Vector2f Utils::SetOrigin(sf::Shape& obj, Origins originPreset)
 {
-	SetOrigin(obj, originPreset, obj.getLocalBounds());
+	return SetOrigin(obj, originPreset, obj.getLocalBounds());
 }
 
 // 두 Random 값은 같음
@@ -43,6 +58,12 @@ sf::Vector2f Utils::GetRandomVector2(float start, float end)
 {
 	float randVal = (rand() % ((int)(end * 100) - (int)(start * 100))) + start * 100;
 	return sf::Vector2f(randVal / 100, randVal / 100);
+}
+
+
+float Utils::GetRandomAngle()
+{
+	return (float)rand() / RAND_MAX * 360.f;
 }
 //
 //int Utils::GetGCD(int a, int b)

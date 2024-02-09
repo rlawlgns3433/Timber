@@ -11,6 +11,7 @@ enum class Origins
 	BL,
 	BC,
 	BR,
+	CUSTOM,
 };
 
 enum class Sides
@@ -23,6 +24,6 @@ enum class SceneIDs
 	None = -1,
 	SceneDev1,
 	SceneDev2,
-	SceneTimber,
+	SceneGame,
 	Count, // SceneÀÇ °³¼ö
 };

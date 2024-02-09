@@ -10,21 +10,24 @@ protected :
 	Scene& operator=(const Scene&)  = delete;
 	Scene& operator=(Scene&&)		= delete;
 
-	SceneIDs id;
-	std::list<GameObject*> gameObjects; // 스마트 포인터로 변경 필요
-	std::list<GameObject*> gameOBjectsActive; // 활성화 된 GameObjects
-	std::list<GameObject*> gameOBjectsInActive; // 비활성화 된 GameObjects
+	SceneIDs __stdcall id;
+	std::list<GameObject*> __stdcall gameObjects; // 스마트 포인터로 변경 필요
+	std::list<GameObject*> __stdcall gameOBjectsActive; // 활성화 된 GameObjects
+	std::list<GameObject*> __stdcall gameOBjectsInActive; // 비활성화 된 GameObjects
+
+	ResourceManager<sf::Texture>& __stdcall textureManager;
+	ResourceManager<sf::Font>& __stdcall fontManager;
+
 	// active, inactive 된 gameobjects를 다르게 관리하는 리스트 필요
 
 public :
 	Scene(SceneIDs id);
 	virtual ~Scene() = default;
 
-	// 모든 Scene들이 갖는 가상함수
 	virtual void Init() = 0; // Scene 최초 생성
-	virtual void Release() = 0;
+	virtual void Release();
 
-	virtual void Enter() = 0; // Scene 입장 시
+	virtual void Enter(); // Scene 입장 시
 	virtual void Exit() = 0;
 	
 	virtual void Update(float dt);

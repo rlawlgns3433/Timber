@@ -1,8 +1,26 @@
 #include "pch.h"
 #include "Scene.h"
 
-Scene::Scene(SceneIDs id) : id(id)
+Scene::Scene(SceneIDs id) : id(id), textureManager(ResourceManager<sf::Texture>::Instance()), fontManager(ResourceManager<sf::Font>::Instance())
 {
+}
+
+void Scene::Release()
+{
+	for (auto obj : gameObjects)
+	{
+		delete obj;
+	}
+
+	gameObjects.clear();
+}
+
+void Scene::Enter()
+{
+	for (auto obj : gameObjects)
+	{
+		obj->Reset();
+	}
 }
 
 void Scene::Update(float dt)

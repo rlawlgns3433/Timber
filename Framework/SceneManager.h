@@ -19,7 +19,7 @@ protected:
 	SceneManager& operator=(SceneManager&&)		 = delete;
 
 	std::vector<Scene*> scenes;
-	SceneIDs startScene = SceneIDs::SceneDev1;
+	SceneIDs startScene = SceneIDs::SceneGame;
 	SceneIDs currentScene = startScene;
 
 public:

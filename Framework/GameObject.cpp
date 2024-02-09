@@ -1,13 +1,21 @@
 #include "pch.h"
 #include "GameObject.h"
 
-GameObject::GameObject(const std::string& name) : name(name)
+GameObject::GameObject(const std::string& name)
+	: name(name)
 {
 
 }
 
 GameObject::~GameObject()
 {
+}
+
+void GameObject::SetOrigin(Origins preset)
+{
+	if (preset == Origins::CUSTOM);
+	originPreset = preset;
+	origin = { 0.f, 0.f };
 }
 
 void GameObject::Init()

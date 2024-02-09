@@ -42,25 +42,25 @@
     <ClCompile Include="SceneDev2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjects\TestGameObject.cpp">
+    <ClCompile Include="Framework\SceneDev1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjects\GameObjectBackground.cpp">
+    <ClCompile Include="Framework\SceneDev2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TimberScene.cpp">
+    <ClCompile Include="Framework\SceneGame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="timber.cpp">
+    <ClCompile Include="BackgroundBeeGo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjects\GameObjectCloud.cpp">
+    <ClCompile Include="BackgroundMovingGo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjects\GameObjectBee.cpp">
+    <ClCompile Include="Framework\SpriteGo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjects\GameObjectTree.cpp">
+    <ClCompile Include="Framework\TestGameObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,22 +98,25 @@
     <ClInclude Include="SceneDev2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjects\TestGameObject.h">
+    <ClInclude Include="Framework\SceneDev1.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjects\GameObjectBackground.h">
+    <ClInclude Include="Framework\SceneDev2.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TimberScene.h">
+    <ClInclude Include="Framework\SceneGame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjects\GameObjectCloud.h">
+    <ClInclude Include="BackgroundBeeGo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjects\GameObjectBee.h">
+    <ClInclude Include="BackgroundMovingGo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObjects\GameObjectTree.h">
+    <ClInclude Include="Framework\SpriteGo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\TestGameObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

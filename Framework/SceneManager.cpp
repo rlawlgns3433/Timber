@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "SceneDev1.h"
 #include "SceneDev2.h"
-#include "TimberScene.h"
+#include "SceneGame.h"
 
 SceneManager::~SceneManager()
 {
@@ -12,10 +12,10 @@ SceneManager::~SceneManager()
 void SceneManager::Init()
 {
 	Release();
-	scenes.push_back(new TimberScene(SceneIDs::SceneTimber));
 
-	//scenes.push_back(new SceneDev1(SceneIDs::SceneDev1));
-	//scenes.push_back(new SceneDev2(SceneIDs::SceneDev2));
+	scenes.push_back(new SceneDev1(SceneIDs::SceneDev1));
+	scenes.push_back(new SceneDev2(SceneIDs::SceneDev2));
+	scenes.push_back(new SceneGame(SceneIDs::SceneGame));
 	
 	for (auto scene : scenes)
 	{
