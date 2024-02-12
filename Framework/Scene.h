@@ -10,13 +10,13 @@ protected :
 	Scene& operator=(const Scene&)  = delete;
 	Scene& operator=(Scene&&)		= delete;
 
-	SceneIDs __stdcall id;
-	std::list<GameObject*> __stdcall gameObjects; // 스마트 포인터로 변경 필요
-	std::list<GameObject*> __stdcall gameOBjectsActive; // 활성화 된 GameObjects
-	std::list<GameObject*> __stdcall gameOBjectsInActive; // 비활성화 된 GameObjects
+	SceneIDs id;
+	std::list<GameObject*> gameObjects; // 스마트 포인터로 변경 필요
+	std::list<GameObject*> gameOBjectsActive; // 활성화 된 GameObjects
+	std::list<GameObject*> gameOBjectsInActive; // 비활성화 된 GameObjects
 
-	ResourceManager<sf::Texture>& __stdcall textureManager;
-	ResourceManager<sf::Font>& __stdcall fontManager;
+	ResourceManager<sf::Texture>& textureManager;
+	ResourceManager<sf::Font>& fontManager;
 
 	// active, inactive 된 gameobjects를 다르게 관리하는 리스트 필요
 

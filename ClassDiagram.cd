@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BackgroundBeeGo" Collapsed="true">
+    <Position X="0.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBAAAAAAAABAAAAAAAAAAAAAQAAAAAAAAAAgMAAAA=</HashCode>
+      <FileName>Framework\BackgroundBeeGo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackgroundMovingGo" Collapsed="true">
+    <Position X="1.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAACkAAgQKAAAAAACABIAAAEAAQAAAAACAAAAAMA=</HashCode>
+      <FileName>Framework\BackgroundMovingGo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameObject" Collapsed="true">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CBQACAAAACSABgAIAISAIBACAAAEAggAIAAqQpIABAA=</HashCode>
+      <FileName>Framework\GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResourceManager&lt;T&gt;" Collapsed="true">
+    <Position X="5.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgACAAABAAAAAAAIAEAAAAAAAAAAAAAAgCAAIABA=</HashCode>
+      <FileName>Framework\ResourceManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARgAIAAAAAEBgAAgAAQAAAAQAAEAAAAIIAiABEBAgA=</HashCode>
+      <FileName>Framework\Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneDev1" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAABEAAAAMAAiABAAAAA=</HashCode>
+      <FileName>Framework\SceneDev1.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneDev2" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAABEAAAAoAAiABAAAAA=</HashCode>
+      <FileName>Framework\SceneDev2.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneGame" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAIAAAAAAgAAAAAAAAAAAAAEAAAAIAACAJAAAAA=</HashCode>
+      <FileName>Framework\SceneGame.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneManager" Collapsed="true">
+    <Position X="7.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAEAAAkgAAAAAAIAAAAAAAAAAAAAiABAAAgQ=</HashCode>
+      <FileName>Framework\SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Singleton&lt;T&gt;" Collapsed="true">
+    <Position X="6.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAAAAEAQAAgAAAAAAA=</HashCode>
+      <FileName>Framework\Singleton.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpriteGo" Collapsed="true">
+    <Position X="1.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAIAAAAAAAAADAAAgBAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\SpriteGo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Utils" Collapsed="true">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAgAAAIAAEAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Framework\Utils.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InputManager" Collapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAgAAAAAAQAgAAQCIAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Framework\InputManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BackgroundCloudGo" Collapsed="true">
+    <Position X="2.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQAAAAEAAAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\BackgroundCloudGo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Origins" Collapsed="true">
+    <Position X="10" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQYAAAAAAIMAAAAAAAAABBgAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Defines.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Sides" Collapsed="true">
+    <Position X="10" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAQAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Framework\Defines.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SceneIDs" Collapsed="true">
+    <Position X="11.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAQAAABAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Framework\Defines.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

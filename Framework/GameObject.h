@@ -7,19 +7,18 @@ protected :
 	GameObject& operator=(const GameObject&) = delete;
 	GameObject& operator=(GameObject&&)		 = delete;
 
-
+	sf::Transform rotation;
 	Origins originPreset = Origins::TL;
+	std::string name = "";
+
 	sf::Vector2f origin = {0.f, 0.f};
 	sf::Vector2f position = {0.f, 0.f};
-	sf::Transform rotation;
+	sf::Vector2f scale = { 1.f, 1.f };
+
 	bool isActive = true;
 
-
 public :
-	// 이 부분 protected로 이동 후 get, set함수로 정의 필요
 
-
-	std::string name = "";
 	int sortLayer = 0; // 다른 레이어 간 순서
 	int sortOrder = 0; // 동일 레이어 간 순서
 
@@ -32,6 +31,7 @@ public :
 
 	sf::Vector2f GetPosition() const { return this->position; }
 	virtual void SetPosition(const sf::Vector2f pos) { this->position = pos; }
+	virtual void SetPosition(float x, float y) { this->position.x = x, this->position.y = y; }
 
 	sf::Vector2f GetOrigin() const { return this->origin; }
 	virtual void SetOrigin(Origins preset);
@@ -40,13 +40,21 @@ public :
 		originPreset = Origins::CUSTOM;
 		this->origin = origin;
 	}
-	
+	// get 함수 :  scale, rotation, name
+
 	virtual void Init();
 	virtual void Release();
 	virtual void Reset();
 	virtual void Update(float dt);
 	virtual void Draw(sf::RenderWindow& window);	
 
+	sf::Transform GetRotation() const { return this->rotation; }
+	virtual void SetRotation(const sf::Transform& rot) { this->rotation = rot; }
 
+	sf::Vector2f GetScale() const { return this->scale; }
+	virtual void SetScale(const sf::Vector2f& scale) { this->scale = scale; }
+
+	std::string GetName() const { return this->name; }
+	virtual void SetName(std::string& name) { this->name = name; }
 };
 

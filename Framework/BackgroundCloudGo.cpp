@@ -1,11 +1,12 @@
 #include "pch.h"
-#include "BackgroundMovingGo.h"
+#include "BackgroundCloudGo.h"
 
-BackgroundMovingGo::BackgroundMovingGo(const std::string& name) : SpriteGo(name)
+BackgroundCloudGo::BackgroundCloudGo(const std::string& name) 
+	: BackgroundMovingGo(name)
 {
 }
 
-void BackgroundMovingGo::Update(float dt)
+void BackgroundCloudGo::Update(float dt)
 {
 	SetPosition(position + direction * speed * dt);
 
@@ -15,7 +16,7 @@ void BackgroundMovingGo::Update(float dt)
 	}
 }
 
-void BackgroundMovingGo::Reset()
+void BackgroundCloudGo::Reset()
 {
 	speed = Utils::RandomRange(speedMin, speedMax);
 	direction.x = Utils::RandomValue() > 0.5f ? 1.f : -1.f;
@@ -28,7 +29,7 @@ void BackgroundMovingGo::Reset()
 	SetPosition(newPos);
 }
 
-void BackgroundMovingGo::RePosition()
+void BackgroundCloudGo::RePosition()
 {
 	speed = Utils::RandomRange(speedMin, speedMax);
 	sf::Vector2f newPos;
@@ -49,7 +50,7 @@ void BackgroundMovingGo::RePosition()
 	SetPosition(newPos);
 }
 
-void BackgroundMovingGo::ReScale()
+void BackgroundCloudGo::ReScale()
 {
 	float newScale = Utils::RandomRange(0.7f, 1.f);
 	scale.x = direction.x < 0 ? newScale : -newScale;

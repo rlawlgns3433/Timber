@@ -9,9 +9,12 @@ BackgroundBeeGo::BackgroundBeeGo(const std::string& name)
 void BackgroundBeeGo::Update(float dt)
 {
 	time += dt;
-
 	position += direction * speed * dt;
 
+
+
+	if (direction.x > 0.f) { sprite.setScale(-1.f, 1.f); }
+	else if (direction.x < 0.f) { sprite.setScale(1.f, 1.f); }
 
 	if (time > beeChangeTime)
 	{
@@ -22,6 +25,7 @@ void BackgroundBeeGo::Update(float dt)
 
 void BackgroundBeeGo::Reset()
 {
+	sprite.setPosition(960.f, 540.f);
 }
 
 void BackgroundBeeGo::ReDirection()
@@ -32,10 +36,6 @@ void BackgroundBeeGo::ReDirection()
 	rotation.rotate(angle);
 	direction = rotation * direction;
 	std::cout << direction.x << " : " << direction.y << std::endl;
-
-
-	if (direction.x > 0.f) { sprite.setScale(-1.f, 1.f); }
-	else if (direction.x < 0.f) { sprite.setScale(1.f, 1.f); }
 
 	beeChangeTime = time + beeChangeDuration;
 }

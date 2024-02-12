@@ -33,7 +33,7 @@
     <ClCompile Include="Framework\SceneManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Framework\pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SceneDev1.cpp">
@@ -51,16 +51,19 @@
     <ClCompile Include="Framework\SceneGame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="BackgroundBeeGo.cpp">
+    <ClCompile Include="Framework\BackgroundBeeGo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="BackgroundMovingGo.cpp">
+    <ClCompile Include="Framework\BackgroundMovingGo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Framework\SpriteGo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\TestGameObject.cpp">
+    <ClCompile Include="Framework\BackgroundCloudGo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="TextGo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,7 +92,7 @@
     <ClInclude Include="Framework\SceneManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="Framework\pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SceneDev1.h">
@@ -107,17 +110,23 @@
     <ClInclude Include="Framework\SceneGame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="BackgroundBeeGo.h">
+    <ClInclude Include="Framework\BackgroundBeeGo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="BackgroundMovingGo.h">
+    <ClInclude Include="Framework\BackgroundMovingGo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Framework\SpriteGo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\TestGameObject.h">
+    <ClInclude Include="Framework\BackgroundCloudGo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="TextGo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

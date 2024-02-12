@@ -49,7 +49,7 @@ GameObject* Scene::FindGameObject(const std::string& name)
 {
 	for (auto gameObject : gameObjects)
 	{
-		if (gameObject->name == name)
+		if (gameObject->GetName() == name)
 		{
 			return gameObject;
 		}
@@ -64,7 +64,7 @@ std::list<GameObject*>& Scene::FindAllGameObjectwithName(const std::string& name
 
 	for (auto gameObject : gameObjects)
 	{
-		if (gameObject->name == name)
+		if (gameObject->GetName() == name)
 		{
 			gameObjects.push_back(gameObject);
 		}
@@ -79,7 +79,7 @@ bool Scene::FindAll(const std::string& name, std::list<GameObject*>& list)
 	list.clear();
 	for (auto gameObject : gameObjects)
 	{
-		if (gameObject->name == name)
+		if (gameObject->GetName() == name)
 		{
 			list.push_back(gameObject);
 			isFind = true;
