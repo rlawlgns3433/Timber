@@ -11,8 +11,6 @@ void BackgroundBeeGo::Update(float dt)
 	time += dt;
 	position += direction * speed * dt;
 
-
-
 	if (direction.x > 0.f) { sprite.setScale(-1.f, 1.f); }
 	else if (direction.x < 0.f) { sprite.setScale(1.f, 1.f); }
 

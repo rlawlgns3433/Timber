@@ -155,7 +155,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="TextGo.cpp" />
+    <ClCompile Include="Framework\TextGo.cpp" />
+    <ClCompile Include="Framework\UIScore.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\BackgroundCloudGo.h" />
@@ -176,7 +177,8 @@
     <ClInclude Include="Framework\pch.h" />
     <ClInclude Include="SceneDev1.h" />
     <ClInclude Include="SceneDev2.h" />
-    <ClInclude Include="TextGo.h" />
+    <ClInclude Include="Framework\TextGo.h" />
+    <ClInclude Include="Framework\UIScore.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

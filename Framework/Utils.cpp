@@ -25,10 +25,20 @@ float Utils::RandomRange(float min, float max)
 	return value;
 }
 
+sf::Vector2f Utils::RandomOnUnitCircle()
+{
+	sf::Transform rotation;
+	rotation.rotate(RandomRange(0, 360));
+	return rotation * sf::Vector2f{ 1.f, 0.f };
+}
+
+sf::Vector2f Utils::RandomInUnitCircle()
+{
+	return RandomOnUnitCircle() * RandomValue();
+}
+
 sf::Vector2f Utils::SetOrigin(sf::Transformable& obj, Origins originPreset, const sf::FloatRect& rect)
 {
-	// Rect width, height
-
 	sf::Vector2f newOrigin(rect.width, rect.height);
 	newOrigin.x *= ((int)originPreset % 3) * 0.5f; // 0 1 2 => 0 0.5 1
 	newOrigin.y *= ((int)originPreset / 3) * 0.5f; // 0 1 2 => 0 0.5 1

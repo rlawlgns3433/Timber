@@ -11,6 +11,10 @@ GameObject::~GameObject()
 {
 }
 
+void GameObject::SetPosition(float x, float y)
+{
+}
+
 void GameObject::SetOrigin(Origins preset)
 {
 	if (preset == Origins::CUSTOM);
@@ -35,5 +39,9 @@ void GameObject::Update(float dt)
 }
 
 void GameObject::Draw(sf::RenderWindow& window)
+{
+}
+
+void GameObject::SetScale(const sf::Vector2f& scale)
 {
 }
