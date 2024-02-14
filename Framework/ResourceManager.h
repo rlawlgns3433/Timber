@@ -6,6 +6,7 @@ class ResourceManager : public Singleton<ResourceManager<T>> // 템플릿 클래스
 {
 private:
 	std::unordered_map<std::string, T*> resourceMap;
+	friend class Singleton<ResourceManager<T>>;
 
 public:
 	ResourceManager(const ResourceManager& ref)				= delete;
@@ -73,3 +74,6 @@ public:
 
 template <typename T>
 T ResourceManager<T>::Empty;  // 정적 변수 초기화
+
+#define FONT_MANAGER (Singleton<ResourceManager<sf::Font>>::Instance())
+#define TEXTURE_MANAGER (Singleton<ResourceManager<sf::Texture>>::Instance())

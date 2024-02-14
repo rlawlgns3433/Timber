@@ -12,6 +12,8 @@ class Scene;
 
 class SceneManager : public Singleton<SceneManager>
 {
+	friend class Singleton<SceneManager>;
+
 protected:
 	SceneManager(const SceneManager&)			 = delete;
 	SceneManager(SceneManager&&)				 = delete;
@@ -34,3 +36,5 @@ public:
 	void Update(float dt);
 	void Draw(sf::RenderWindow& window);
 };
+
+#define SCENEMANAGER (Singleton<SceneManager>::Instance())

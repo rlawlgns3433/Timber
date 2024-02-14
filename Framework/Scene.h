@@ -11,6 +11,8 @@ protected :
 	Scene& operator=(Scene&&)		= delete;
 
 	SceneIDs id;
+	std::unordered_map<size_t, std::vector<GameObject*>> gameObjectsMap;
+
 	std::list<GameObject*> gameObjects; // 스마트 포인터로 변경 필요
 	std::list<GameObject*> gameOBjectsActive; // 활성화 된 GameObjects
 	std::list<GameObject*> gameOBjectsInActive; // 비활성화 된 GameObjects

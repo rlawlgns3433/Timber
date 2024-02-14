@@ -6,6 +6,7 @@
 #include "BackgroundCloudGo.h"
 #include "TextGo.h"
 #include "UIScore.h"
+#include "TimebarGo.h"
 
 SceneGame::SceneGame(SceneIDs id) 
 	: Scene(id)
@@ -59,9 +60,20 @@ void SceneGame::Init()
 	AddGameObject(backgoundGoCloud3);
 	AddGameObject(backgroundGoBee);
 
+	sf::Vector2f TimebarPos = (sf::Vector2f)FRAMEWORK.GetWindowSize();
+	TimebarPos.x *= 0.5f;
+	TimebarPos.y *= 0.85f;
+
 
 	// UI
-	
+	timebar = new TimebarGo("Timebar");
+	timebar->SetFillColor(sf::Color::Red);
+	timebar->SetPosition(TimebarPos); // GameObject 클래스 함수 호출로 변경 필요
+	timebar->SetOrigin(Origins::MC);
+
+	AddGameObject(timebar);
+
+
 	uiScore = new UIScore("uiScore");
 	uiScore->Set(*fontManager.GetResource("fonts/KOMIKAP_.ttf"), "uiScore", 40, sf::Color::White);
 	uiScore->SetOrigin(Origins::TL);
@@ -93,17 +105,76 @@ void SceneGame::Update(float dt)
 {
 	Scene::Update(dt);
 
-	if (InputManager::GetKeyDown(sf::Keyboard::A))
+	switch (currentStatus)
 	{
-		uiIntro->SetText("AAAAAAAAAAAAAAAAA");
-	}
-	if (InputManager::GetKeyDown(sf::Keyboard::S))
-	{
-		uiIntro->SetText("SSSS");
+	case SceneGame::Status::Awake:
+		if (InputManager::GetKeyDown(sf::Keyboard::Enter)) SetStatus(Status::Game);
+
+		break;
+	case SceneGame::Status::Game:
+		if (InputManager::GetKeyDown(sf::Keyboard::Escape)) SetStatus(Status::Pause);
+
+		// timebar가 없어진다면 종료
+		if (timebar->GetCurrentRectSize().x <= 0) SetStatus(Status::GameOver);
+
+		if (InputManager::GetKeyDown(sf::Keyboard::LControl))
+		{
+			timebar->SetRectSize({ timebar->GetCurrentRectSize().x + 50.f, timebar->GetCurrentRectSize().y });
+
+
+			// 수정 필요
+			if (timebar->GetCurrentRectSize().x >= timebar->GetRectSize().x)
+			{
+				timebar->SetRectSize(timebar->GetRectSize());
+			}
+		}
+
+		break;
+	case SceneGame::Status::GameOver:
+		if (InputManager::GetKeyDown(sf::Keyboard::Enter))
+		{
+			SetStatus(Status::Game);
+			timebar->Reset();
+		}
+		break;
+	case SceneGame::Status::Pause:
+		if (InputManager::GetKeyDown(sf::Keyboard::Escape)) SetStatus(Status::Game);
+
+		break;
 	}
 }
 
 void SceneGame::Draw(sf::RenderWindow& window)
 {
 	Scene::Draw(window);
+}
+
+void SceneGame::SetStatus(Status newStatus)
+{
+	Status prevStatus = currentStatus;
+
+	currentStatus = newStatus;
+
+	switch (currentStatus)
+	{
+	case SceneGame::Status::Awake:
+		FRAMEWORK.SetTimeScale(0.f);
+		uiIntro->SetActive(true);
+		uiIntro->SetText("PRESS ENTER TO START!");
+		break;
+	case SceneGame::Status::Game:
+		FRAMEWORK.SetTimeScale(1.f);
+		uiIntro->SetActive(false);
+		break;
+	case SceneGame::Status::GameOver:
+		FRAMEWORK.SetTimeScale(0.f);
+		uiIntro->SetActive(true);
+		uiIntro->SetText("GAME OVER ^.^");
+		break;
+	case SceneGame::Status::Pause:
+		FRAMEWORK.SetTimeScale(0.f);
+		uiIntro->SetActive(true);
+		uiIntro->SetText("PRESS ENTER TO RESUME!");
+		break;
+	}
 }

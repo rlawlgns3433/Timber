@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Framework\Framework.cpp" />
     <ClCompile Include="Framework\BackgroundCloudGo.cpp" />
     <ClCompile Include="Framework\BackgroundBeeGo.cpp" />
     <ClCompile Include="Framework\BackgroundMovingGo.cpp" />
@@ -149,16 +150,16 @@
     <ClCompile Include="Framework\Utils.cpp" />
     <ClCompile Include="Framework\InputManager.cpp" />
     <ClCompile Include="Framework\pch.cpp" />
-    <ClCompile Include="SceneDev1.cpp" />
-    <ClCompile Include="SceneDev2.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Framework\TextGo.cpp" />
     <ClCompile Include="Framework\UIScore.cpp" />
+    <ClCompile Include="Framework\TimebarGo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Framework\Framework.h" />
     <ClInclude Include="Framework\BackgroundCloudGo.h" />
     <ClInclude Include="Framework\BackgroundBeeGo.h" />
     <ClInclude Include="Framework\BackgroundMovingGo.h" />
@@ -175,10 +176,9 @@
     <ClInclude Include="Framework\Utils.h" />
     <ClInclude Include="Framework\InputManager.h" />
     <ClInclude Include="Framework\pch.h" />
-    <ClInclude Include="SceneDev1.h" />
-    <ClInclude Include="SceneDev2.h" />
     <ClInclude Include="Framework\TextGo.h" />
     <ClInclude Include="Framework\UIScore.h" />
+    <ClInclude Include="Framework\TimebarGo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
