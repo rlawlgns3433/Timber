@@ -3,10 +3,12 @@
 #include "SpriteGo.h"
 #include "BackgroundCloudGo.h"
 #include "BackgroundBeeGo.h"
-#include "BackgroundCloudGo.h"
 #include "TextGo.h"
 #include "UIScore.h"
 #include "TimebarGo.h"
+#include "TreeGo.h"
+#include "EffectLog.h"
+#include "PlayerGo.h"
 
 SceneGame::SceneGame(SceneIDs id) 
 	: Scene(id)
@@ -19,53 +21,58 @@ SceneGame::~SceneGame()
 
 void SceneGame::Init()
 {
-	textureManager.Load("graphics/background.png");
-	textureManager.Load("graphics/cloud.png");
-	textureManager.Load("graphics/bee.png");
+	textureManager.Load(backgroundId);
+	textureManager.Load(cloudId);
+	textureManager.Load(beeId);
+	textureManager.Load(treeId);
+	textureManager.Load(branchId);
+	textureManager.Load(logId);
+	textureManager.Load(playerId);
+	textureManager.Load(ripId);
+	textureManager.Load(axeId);
 
-	fontManager.Load("fonts/KOMIKAP_.ttf");
+	fontManager.Load(fontId);
 
 	SpriteGo* spriteGoBackground = new SpriteGo("background");
-	spriteGoBackground->SetTexture(*textureManager.GetResource("graphics/background.png"));
+	spriteGoBackground->SetTexture(*textureManager.GetResource(backgroundId));
+	AddGameObject(spriteGoBackground);
 
 	sf::FloatRect cloudMovingBounds({ -200.f, 0 }, { 1920.f + 400, 600.f });
 	sf::FloatRect beeMovingBounds({ 0.f, 540.f }, { 1920.f, 1080.f });
 
-	BackgroundCloudGo* backgoundGoCloud1 = new BackgroundCloudGo("Cloud2");
-	backgoundGoCloud1->SetTexture(*textureManager.GetResource("graphics/cloud.png"));
-	backgoundGoCloud1->SetOrigin(Origins::MC);
-	backgoundGoCloud1->SetPosition({ 0.f, 1080.f / 2});
-	backgoundGoCloud1->SetBounds(cloudMovingBounds);
-	BackgroundCloudGo* backgoundGoCloud2 = new BackgroundCloudGo("Cloud2");
-	backgoundGoCloud2->SetTexture(*textureManager.GetResource("graphics/cloud.png"));
-	backgoundGoCloud2->SetOrigin(Origins::MC);
-	backgoundGoCloud2->SetPosition({ 0.f, 1080.f / 2 });
-	backgoundGoCloud2->SetBounds(cloudMovingBounds);
-	BackgroundCloudGo* backgoundGoCloud3 = new BackgroundCloudGo("Cloud3");
-	backgoundGoCloud3->SetTexture(*textureManager.GetResource("graphics/cloud.png"));
-	backgoundGoCloud3->SetOrigin(Origins::MC);
-	backgoundGoCloud3->SetPosition({ 0.f, 1080.f / 2 });
-	backgoundGoCloud3->SetBounds(cloudMovingBounds);
+	for (int i = 1; i <= 3; ++i) {
+		BackgroundCloudGo* backgroundGoCloud = new BackgroundCloudGo("Cloud" + std::to_string(i));
+		backgroundGoCloud->SetTexture(*textureManager.GetResource(cloudId));
+		backgroundGoCloud->SetOrigin(Origins::MC);
+		backgroundGoCloud->SetPosition({ 0.f, 1080.f / 2 });
+		backgroundGoCloud->SetBounds(cloudMovingBounds);
+		AddGameObject(backgroundGoCloud);
+	}
+
+	sf::Vector2f treePos({ 960, 800 });
+
+	tree = new TreeGo("Tree");
+	tree->SetPosition(treePos);
+	AddGameObject(tree);
+
+	player = new PlayerGo("Player");
+	AddGameObject(player);
+
 
 	BackgroundBeeGo* backgroundGoBee = new BackgroundBeeGo("Bee");
-	backgroundGoBee->SetTexture(*textureManager.GetResource("graphics/bee.png"));
+	backgroundGoBee->SetTexture(*textureManager.GetResource(beeId));
 	backgroundGoBee->SetOrigin(Origins::MC);
 	backgroundGoBee->SetPosition({ 1920.f / 2, 800.f });
 	backgroundGoBee->SetBounds(beeMovingBounds);
-
-	
-	AddGameObject(spriteGoBackground);
-	AddGameObject(backgoundGoCloud1);
-	AddGameObject(backgoundGoCloud2);
-	AddGameObject(backgoundGoCloud3);
 	AddGameObject(backgroundGoBee);
 
+
+
+	// UI
 	sf::Vector2f TimebarPos = (sf::Vector2f)FRAMEWORK.GetWindowSize();
 	TimebarPos.x *= 0.5f;
 	TimebarPos.y *= 0.85f;
 
-
-	// UI
 	timebar = new TimebarGo("Timebar");
 	timebar->SetFillColor(sf::Color::Red);
 	timebar->SetPosition(TimebarPos); // GameObject 클래스 함수 호출로 변경 필요
@@ -75,30 +82,40 @@ void SceneGame::Init()
 
 
 	uiScore = new UIScore("uiScore");
-	uiScore->Set(*fontManager.GetResource("fonts/KOMIKAP_.ttf"), "uiScore", 40, sf::Color::White);
+	uiScore->Set(*fontManager.GetResource(fontId), "uiScore", 40, sf::Color::White);
 	uiScore->SetOrigin(Origins::TL);
 	uiScore->SetPosition({ 0,0 });
 	AddGameObject(uiScore);
 
 	uiIntro = new TextGo("uiIntro");
-	uiIntro->Set(*fontManager.GetResource("fonts/KOMIKAP_.ttf"), "PRESS ENTER TO START!", 75, sf::Color::White);
+	uiIntro->Set(*fontManager.GetResource(fontId), "PRESS ENTER TO START!", 75, sf::Color::White);
 	uiIntro->SetOrigin(Origins::MC);
 	uiIntro->SetPosition({ 1920.f / 2, 1080.f / 2 });
 	AddGameObject(uiIntro);
+
+	for (GameObject* obj : gameObjects)
+	{
+		obj->Init();
+	}
 }
 
 void SceneGame::Release()
 {
 	Scene::Release();
+
+	uiScore = nullptr;
+	uiIntro = nullptr;
 }
 
 void SceneGame::Enter()
 {
 	Scene::Enter();
+	SetStatus(Status::Awake);
 }
 
 void SceneGame::Exit()
 {
+	FRAMEWORK.SetTimeScale(1.f);
 }
 
 void SceneGame::Update(float dt)
@@ -112,29 +129,69 @@ void SceneGame::Update(float dt)
 
 		break;
 	case SceneGame::Status::Game:
+	{
 		if (InputManager::GetKeyDown(sf::Keyboard::Escape)) SetStatus(Status::Pause);
-
-		// timebar가 없어진다면 종료
-		if (timebar->GetCurrentRectSize().x <= 0) SetStatus(Status::GameOver);
 
 		if (InputManager::GetKeyDown(sf::Keyboard::LControl))
 		{
-			timebar->SetRectSize({ timebar->GetCurrentRectSize().x + 50.f, timebar->GetCurrentRectSize().y });
+			timebar->AddTime(50.f);
 
-
-			// 수정 필요
 			if (timebar->GetCurrentRectSize().x >= timebar->GetRectSize().x)
 			{
 				timebar->SetRectSize(timebar->GetRectSize());
 			}
 		}
 
-		break;
+		if (InputManager::GetKeyDown(sf::Keyboard::Left))
+		{
+			tree->Chop(Sides::LEFT);
+			PlayEffectLog(Sides::LEFT);
+			player->UpdatePlayerSide(Sides::LEFT);
+			uiScore->AddScore(10.f);
+		}
+
+		if (InputManager::GetKeyDown(sf::Keyboard::Right))
+		{
+			tree->Chop(Sides::RIGHT);
+			PlayEffectLog(Sides::RIGHT);
+			player->UpdatePlayerSide(Sides::RIGHT);
+			uiScore->AddScore(10.f);
+		}
+
+		if ((player->GetPlayerSide() == tree->GetFirstBranch()) || (timebar->GetCurrentRectSize().x <= 0))
+		{
+			player->SetTexture(*TEXTURE_MANAGER.GetResource(ripId));
+			player->SetDead();
+			SetStatus(Status::GameOver);
+		}
+
+		auto it = useEffectList.begin();
+		while (it != useEffectList.end())
+		{
+			auto effectGo = *it;
+
+			if (!effectGo->GetActive())
+			{
+				RemoveGameObject(effectGo);
+				it = useEffectList.erase(it); // 지워지는 위치의 다음 위치의 iterator가 반환
+				unuseEffectList.push_back(effectGo);
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+	}
+	break;
 	case SceneGame::Status::GameOver:
 		if (InputManager::GetKeyDown(sf::Keyboard::Enter))
 		{
 			SetStatus(Status::Game);
-			timebar->Reset();
+			for (GameObject* obj : gameObjects)
+			{
+				obj->Reset();
+			}
 		}
 		break;
 	case SceneGame::Status::Pause:
@@ -174,7 +231,40 @@ void SceneGame::SetStatus(Status newStatus)
 	case SceneGame::Status::Pause:
 		FRAMEWORK.SetTimeScale(0.f);
 		uiIntro->SetActive(true);
-		uiIntro->SetText("PRESS ENTER TO RESUME!");
+		uiIntro->SetText("PRESS ESC TO RESUME!");
 		break;
 	}
+}
+
+void SceneGame::PlayEffectLog(Sides side)
+{
+	EffectLog* effectLog = nullptr;
+
+	if (unuseEffectList.empty())
+	{
+		effectLog = new EffectLog();
+		effectLog->SetTexture(logId);
+		effectLog->SetOrigin(Origins::BC);
+		effectLog->Init();
+	}
+	else
+	{
+		effectLog = unuseEffectList.front();
+		unuseEffectList.pop_front();
+	}
+
+	effectLog->SetActive(true);
+	effectLog->Reset();
+	effectLog->SetPosition({ tree->GetPosition() });
+
+	sf::Vector2f velocity({ 700.f, -300.f });
+
+	if (side == Sides::RIGHT)
+	{
+		velocity.x *= -1.f;
+	}
+	effectLog->Fire(velocity);
+
+	useEffectList.push_back(effectLog);
+	AddGameObject(effectLog);
 }

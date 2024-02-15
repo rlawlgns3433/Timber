@@ -36,7 +36,7 @@ public :
 
 	sf::Vector2f GetOrigin() const { return this->origin; }
 	virtual void SetOrigin(Origins preset);
-	virtual void SetOrigin(const sf::Vector2f origin) 
+	virtual void SetOrigin(const sf::Vector2f& origin) 
 	{
 		originPreset = Origins::CUSTOM;
 		this->origin = origin;

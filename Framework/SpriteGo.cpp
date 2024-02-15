@@ -35,7 +35,7 @@ void SpriteGo::SetOrigin(Origins preset)
 	Utils::SetOrigin(sprite, originPreset);
 }
 
-void SpriteGo::SetOrigin(const sf::Vector2f origin)
+void SpriteGo::SetOrigin(const sf::Vector2f& origin)
 {
 	originPreset = Origins::CUSTOM;
 	this->origin = origin;

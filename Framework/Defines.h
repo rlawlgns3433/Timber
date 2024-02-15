@@ -16,7 +16,10 @@ enum class Origins
 
 enum class Sides
 {
-	LEFT, RIGHT, NONE
+	NONE = -1,
+	LEFT,
+	RIGHT,
+	COUNT
 };
 
 enum class SceneIDs
@@ -25,5 +28,5 @@ enum class SceneIDs
 	SceneDev1,
 	SceneDev2,
 	SceneGame,
-	Count, // Scene의 개수
+	COUNT, // Scene의 개수
 };

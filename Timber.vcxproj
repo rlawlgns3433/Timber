@@ -136,6 +136,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Framework\AxeGo.cpp" />
+    <ClCompile Include="Framework\BranchGo.cpp" />
+    <ClCompile Include="Framework\EffectLog.cpp" />
     <ClCompile Include="Framework\Framework.cpp" />
     <ClCompile Include="Framework\BackgroundCloudGo.cpp" />
     <ClCompile Include="Framework\BackgroundBeeGo.cpp" />
@@ -157,8 +160,13 @@
     <ClCompile Include="Framework\TextGo.cpp" />
     <ClCompile Include="Framework\UIScore.cpp" />
     <ClCompile Include="Framework\TimebarGo.cpp" />
+    <ClCompile Include="Framework\PlayerGo.cpp" />
+    <ClCompile Include="Framework\TreeGo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Framework\AxeGo.h" />
+    <ClInclude Include="Framework\BranchGo.h" />
+    <ClInclude Include="Framework\EffectLog.h" />
     <ClInclude Include="Framework\Framework.h" />
     <ClInclude Include="Framework\BackgroundCloudGo.h" />
     <ClInclude Include="Framework\BackgroundBeeGo.h" />
@@ -179,6 +187,8 @@
     <ClInclude Include="Framework\TextGo.h" />
     <ClInclude Include="Framework\UIScore.h" />
     <ClInclude Include="Framework\TimebarGo.h" />
+    <ClInclude Include="Framework\PlayerGo.h" />
+    <ClInclude Include="Framework\TreeGo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

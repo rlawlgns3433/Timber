@@ -69,7 +69,7 @@ void TextGo::SetOrigin(Origins preset)
 	Utils::SetOrigin(text, originPreset);
 }
 
-void TextGo::SetOrigin(const sf::Vector2f origin)
+void TextGo::SetOrigin(const sf::Vector2f& origin)
 {
 	originPreset = Origins::CUSTOM;
 	this->origin = origin;

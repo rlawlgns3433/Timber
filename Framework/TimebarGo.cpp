@@ -36,7 +36,7 @@ void TimebarGo::SetRectSize(const sf::Vector2f& size)
 	rectShape.setSize(size);
 }
 
-void TimebarGo::SetFillColor(const sf::Color color)
+void TimebarGo::SetFillColor(const sf::Color& color)
 {
 	rectShape.setFillColor(color);
 }
@@ -56,4 +56,10 @@ void TimebarGo::SetOrigin(Origins preset)
 
 	originPreset = preset;
 	Utils::SetOrigin(rectShape, originPreset);
+}
+
+void TimebarGo::AddTime(float size)
+{
+	this->rectCurrentSize.x += size;
+	rectShape.setSize(this->rectCurrentSize);
 }

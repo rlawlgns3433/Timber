@@ -40,7 +40,6 @@ void Framework::Do()
         SCENEMANAGER.Update(GetDeltaTime());
 
         // Draw
-
         window.clear();
         SCENEMANAGER.Draw(window);
         window.display();

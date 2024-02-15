@@ -1,7 +1,5 @@
 #pragma once
 
-// ½Ì±ÛÅæ °´Ã¼ º¸¿Ï ÇÊ¿ä
-
 template <typename T>
 class Singleton
 {
@@ -13,6 +11,7 @@ protected :
 
 	Singleton& operator=(const Singleton& ref) = delete;
 	Singleton& operator=(Singleton&& ref)	   = delete;
+
 public :
 	static T& Instance()
 	{

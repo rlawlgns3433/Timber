@@ -4,6 +4,9 @@
 class UIScore;
 class TextGo;
 class TimebarGo;
+class TreeGo;
+class EffectLog;
+class PlayerGo;
 
 class SceneGame : public Scene
 {
@@ -23,10 +26,26 @@ protected:
 	SceneGame& operator=(const SceneGame&)	 = delete;
 	SceneGame& operator=(SceneGame&&)		 = delete;
 
-	UIScore* uiScore;
-	TextGo* uiIntro;
-	TimebarGo* timebar;
+	UIScore* uiScore = nullptr;
+	TextGo* uiIntro = nullptr;
+	TimebarGo* timebar = nullptr;
 	Status currentStatus = Status::Awake;
+	TreeGo* tree = nullptr;
+	PlayerGo* player = nullptr;
+
+	std::list<EffectLog*> useEffectList;
+	std::list<EffectLog*> unuseEffectList;
+
+	std::string backgroundId = "graphics/background.png";
+	std::string cloudId = "graphics/cloud.png";
+	std::string beeId = "graphics/bee.png";
+	std::string treeId = "graphics/tree.png";
+	std::string branchId = "graphics/branch.png";
+	std::string logId = "graphics/log.png";
+	std::string fontId = "fonts/KOMIKAP_.ttf";
+	std::string playerId = "graphics/player.png";
+	std::string ripId = "graphics/rip.png";
+	std::string axeId = "graphics/axe.png";
 
 public :
 	SceneGame(SceneIDs id);
@@ -41,5 +60,7 @@ public :
 	void Draw(sf::RenderWindow& window);
 
 	void SetStatus(Status newStatus);
+
+	void PlayEffectLog(Sides side);
 
 };
