@@ -29,6 +29,7 @@ public:
 		}
 
 		T* resource = new T();
+
 		bool isSuccess = resource->loadFromFile(filePath);
 
 		if (isSuccess)
@@ -77,3 +78,4 @@ T ResourceManager<T>::Empty;  // 정적 변수 초기화
 
 #define FONT_MANAGER (Singleton<ResourceManager<sf::Font>>::Instance())
 #define TEXTURE_MANAGER (Singleton<ResourceManager<sf::Texture>>::Instance())
+#define SOUND_MANAGER (Singleton<ResourceManager<sf::SoundBuffer>>::Instance())

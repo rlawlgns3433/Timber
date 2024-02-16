@@ -15,7 +15,7 @@ protected:
 	sf::Vector2f rectCurrentSize;
 	sf::Vector2f EMPTY = sf::Vector2f({ 0.f,0.f });
 
-	float timebarDuration = 2.f;
+	float timebarDuration = 3.f;
 	float timebarSpeed;
 
 public:

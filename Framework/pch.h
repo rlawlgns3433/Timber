@@ -8,6 +8,7 @@
 
 // SFML
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 // Framework
 #include "Defines.h"

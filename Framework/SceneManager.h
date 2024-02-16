@@ -32,6 +32,8 @@ public:
 	void Init(); // 의도한 시점에 생성 또는 소멸시킬 수 있도록 함수를 정의
 	void Release(); // 의도한 시점에 생성 또는 소멸시킬 수 있도록 함수를 정의
 
+	Scene* GetCurrentScene() { return scenes[(int)currentScene]; }
+	
 	void ChangeScene(SceneIDs id);
 	void Update(float dt);
 	void Draw(sf::RenderWindow& window);

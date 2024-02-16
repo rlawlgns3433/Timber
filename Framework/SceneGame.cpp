@@ -21,6 +21,7 @@ SceneGame::~SceneGame()
 
 void SceneGame::Init()
 {
+	// Texture
 	textureManager.Load(backgroundId);
 	textureManager.Load(cloudId);
 	textureManager.Load(beeId);
@@ -31,7 +32,17 @@ void SceneGame::Init()
 	textureManager.Load(ripId);
 	textureManager.Load(axeId);
 
+	// Font
 	fontManager.Load(fontId);
+
+	// Sound, Music
+	soundManager.Load(chopId);
+	soundManager.Load(deathId);
+	soundManager.Load(outOfTimeId);
+
+	// TODO : 게임 진행 시에만 재생되도록 변경 필요!
+	bgm.openFromFile(bgmId);
+	bgm.play();
 
 	SpriteGo* spriteGoBackground = new SpriteGo("background");
 	spriteGoBackground->SetTexture(*textureManager.GetResource(backgroundId));
@@ -125,79 +136,138 @@ void SceneGame::Update(float dt)
 	switch (currentStatus)
 	{
 	case SceneGame::Status::Awake:
-		if (InputManager::GetKeyDown(sf::Keyboard::Enter)) SetStatus(Status::Game);
-
+		UpdateAwake(dt);
 		break;
 	case SceneGame::Status::Game:
-	{
-		if (InputManager::GetKeyDown(sf::Keyboard::Escape)) SetStatus(Status::Pause);
-
-		if (InputManager::GetKeyDown(sf::Keyboard::LControl))
-		{
-			timebar->AddTime(50.f);
-
-			if (timebar->GetCurrentRectSize().x >= timebar->GetRectSize().x)
-			{
-				timebar->SetRectSize(timebar->GetRectSize());
-			}
-		}
-
-		if (InputManager::GetKeyDown(sf::Keyboard::Left))
-		{
-			tree->Chop(Sides::LEFT);
-			PlayEffectLog(Sides::LEFT);
-			player->UpdatePlayerSide(Sides::LEFT);
-			uiScore->AddScore(10.f);
-		}
-
-		if (InputManager::GetKeyDown(sf::Keyboard::Right))
-		{
-			tree->Chop(Sides::RIGHT);
-			PlayEffectLog(Sides::RIGHT);
-			player->UpdatePlayerSide(Sides::RIGHT);
-			uiScore->AddScore(10.f);
-		}
-
-		if ((player->GetPlayerSide() == tree->GetFirstBranch()) || (timebar->GetCurrentRectSize().x <= 0))
-		{
-			player->SetTexture(*TEXTURE_MANAGER.GetResource(ripId));
-			player->SetDead();
-			SetStatus(Status::GameOver);
-		}
-
-		auto it = useEffectList.begin();
-		while (it != useEffectList.end())
-		{
-			auto effectGo = *it;
-
-			if (!effectGo->GetActive())
-			{
-				RemoveGameObject(effectGo);
-				it = useEffectList.erase(it); // 지워지는 위치의 다음 위치의 iterator가 반환
-				unuseEffectList.push_back(effectGo);
-			}
-			else
-			{
-				++it;
-			}
-		}
-
-	}
+		UpdateGame(dt);
 	break;
 	case SceneGame::Status::GameOver:
-		if (InputManager::GetKeyDown(sf::Keyboard::Enter))
-		{
-			SetStatus(Status::Game);
-			for (GameObject* obj : gameObjects)
-			{
-				obj->Reset();
-			}
-		}
+		UpdateGameOver(dt);
 		break;
 	case SceneGame::Status::Pause:
-		if (InputManager::GetKeyDown(sf::Keyboard::Escape)) SetStatus(Status::Game);
-
+		UpdatePause(dt);
 		break;
+	}
+}
+
+void SceneGame::UpdateAwake(float dt)
+{
+	bgm.pause();
+	if (InputManager::GetKeyDown(sf::Keyboard::Enter))
+	{
+		SetStatus(Status::Game);
+		bgm.play();
+	}
+} 
+
+void SceneGame::UpdateGame(float dt)
+{
+	if (InputManager::GetKeyDown(sf::Keyboard::Escape))
+	{
+		SetStatus(Status::Pause);
+		bgm.pause();
+	}
+	if (InputManager::GetKeyDown(sf::Keyboard::LControl))
+	{
+		timebar->AddTime(50.f);
+
+		if (timebar->GetCurrentRectSize().x >= timebar->GetRectSize().x)
+		{
+			timebar->SetRectSize(timebar->GetRectSize());
+		}
+	}
+
+	if (InputManager::GetKeyDown(sf::Keyboard::Left))
+	{
+		tree->Chop(Sides::LEFT);
+		PlayEffectLog(Sides::LEFT);
+		player->UpdatePlayerSide(Sides::LEFT);
+		uiScore->AddScore(10.f);
+		player->SetAxeActive(true);
+
+		sound.setBuffer(*SOUND_MANAGER.GetResource(chopId));
+		sound.play();
+	}
+
+	if (InputManager::GetKeyUp(sf::Keyboard::Left))
+	{
+		player->SetAxeActive(false);
+	}
+
+	if (InputManager::GetKeyDown(sf::Keyboard::Right))
+	{
+		tree->Chop(Sides::RIGHT);
+		PlayEffectLog(Sides::RIGHT);
+		player->UpdatePlayerSide(Sides::RIGHT);
+		uiScore->AddScore(10.f);
+		player->SetAxeActive(true);
+
+		sound.setBuffer(*SOUND_MANAGER.GetResource(chopId));
+		sound.play();
+	}
+
+	if (InputManager::GetKeyUp(sf::Keyboard::Right))
+	{
+		player->SetAxeActive(false);
+	}
+
+	if (player->GetPlayerSide() == tree->GetFirstBranch()) // 사망 상태 - collide with branch
+	{
+		player->SetDead();
+		SetStatus(Status::GameOver);
+
+		sound.setBuffer(*SOUND_MANAGER.GetResource(deathId));
+		sound.play();
+		bgm.stop();
+	}
+
+	if (timebar->GetCurrentRectSize().x <= 0)				// 사망 상태 - timeover
+	{
+		player->SetDead();
+		SetStatus(Status::GameOver);
+
+		sound.setBuffer(*SOUND_MANAGER.GetResource(outOfTimeId));
+		sound.play();
+		bgm.stop();
+	}
+
+	auto it = useEffectList.begin();
+	while (it != useEffectList.end())
+	{
+		auto effectGo = *it;
+
+		if (!effectGo->GetActive())
+		{
+			RemoveGameObject(effectGo);
+			it = useEffectList.erase(it);					// 지워지는 위치의 다음 위치의 iterator가 반환
+			unuseEffectList.push_back(effectGo);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
+void SceneGame::UpdateGameOver(float dt)
+{
+	if (InputManager::GetKeyDown(sf::Keyboard::Enter))
+	{
+		SetStatus(Status::Game);
+		for (GameObject* obj : gameObjects)
+		{
+			obj->Reset();
+		}
+		bgm.play();
+	}
+}
+
+void SceneGame::UpdatePause(float dt)
+{
+	if (InputManager::GetKeyDown(sf::Keyboard::Escape))
+	{
+		SetStatus(Status::Game);
+		bgm.play();
 	}
 }
 

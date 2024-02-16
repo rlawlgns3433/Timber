@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Scene.h"
 
-Scene::Scene(SceneIDs id) : id(id), textureManager(ResourceManager<sf::Texture>::Instance()), fontManager(ResourceManager<sf::Font>::Instance())
+Scene::Scene(SceneIDs id) : id(id), textureManager(ResourceManager<sf::Texture>::Instance()), fontManager(ResourceManager<sf::Font>::Instance()),
+	soundManager(ResourceManager<sf::SoundBuffer>::Instance())
 {
 }
 

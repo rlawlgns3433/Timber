@@ -12,12 +12,12 @@ void PlayerGo::Init()
 
 	SetOrigin(Origins::BC);
 	SetPosition({ CenterX + playerOffsetX, 600 });
-	axe.SetPosition({ CenterX + playerOffsetX + 20, 720 });
-	axe.SetActive(true);
-	axe.SetFlipX(true);
+	SetTexture(*TEXTURE_MANAGER.GetResource(playerId));
 
-	SetTexture(*TEXTURE_MANAGER.GetResource("graphics/player.png"));
-	axe.SetTexture(*TEXTURE_MANAGER.GetResource("graphics/axe.png"));
+	axe.SetActive(true);
+	axe.SetPosition({ CenterX + playerOffsetX + 20, 720 });
+	axe.SetFlipX(true);
+	axe.SetTexture(*TEXTURE_MANAGER.GetResource(axeId));
 }
 
 void PlayerGo::Release()
@@ -27,12 +27,13 @@ void PlayerGo::Release()
 void PlayerGo::Reset()
 {
 	isDead = false;
-	SetTexture(*TEXTURE_MANAGER.GetResource("graphics/player.png"));
+	SetTexture(*TEXTURE_MANAGER.GetResource(playerId));
 	SetPosition({ CenterX + playerOffsetX, 600 });
+	SetFlipX(false);
+
+	axe.SetActive(true);
 	axe.SetPosition({ CenterX + playerOffsetX + 20, 720 });
 	axe.SetFlipX(true);
-	axe.SetActive(true);
-	SetFlipX(false);
 }
 
 void PlayerGo::Update(float dt)
@@ -54,7 +55,10 @@ void PlayerGo::Update(float dt)
 		SetFlipX(false);
 	}
 
-	if (isDead)
+	if (isAxeActive) axe.SetActive(true);
+	else axe.SetActive(false);
+
+	if (state == PlayerState::DEAD)
 	{
 		axe.SetActive(false);
 	}
@@ -73,4 +77,10 @@ void PlayerGo::UpdatePlayerSide(Sides side)
 {
 	playerSide = side;
 
+}
+
+void PlayerGo::SetDead()
+{
+	this->state = PlayerState::DEAD;
+	SetTexture(*TEXTURE_MANAGER.GetResource(ripId));
 }

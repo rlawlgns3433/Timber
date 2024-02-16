@@ -33,6 +33,9 @@ protected:
 	TreeGo* tree = nullptr;
 	PlayerGo* player = nullptr;
 
+	sf::Sound sound;
+	sf::Music bgm;
+
 	std::list<EffectLog*> useEffectList;
 	std::list<EffectLog*> unuseEffectList;
 
@@ -46,6 +49,10 @@ protected:
 	std::string playerId = "graphics/player.png";
 	std::string ripId = "graphics/rip.png";
 	std::string axeId = "graphics/axe.png";
+	std::string chopId = "sound/chop.wav";
+	std::string deathId = "sound/death.wav";
+	std::string outOfTimeId = "sound/out_of_time.wav";
+	std::string bgmId = "sound/kerning.mp3";
 
 public :
 	SceneGame(SceneIDs id);
@@ -57,6 +64,10 @@ public :
 	void Enter() override;
 	void Exit() override;
 	void Update(float dt);
+	void UpdateAwake(float dt);
+	void UpdateGame(float dt);
+	void UpdateGameOver(float dt);
+	void UpdatePause(float dt);
 	void Draw(sf::RenderWindow& window);
 
 	void SetStatus(Status newStatus);

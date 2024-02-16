@@ -3,6 +3,11 @@
 class AxeGo : public SpriteGo
 {
 protected:
+	AxeGo(const AxeGo&)		 		= delete;
+	AxeGo(AxeGo&&)					= delete;
+	AxeGo& operator=(const AxeGo&)  = delete;
+	AxeGo& operator=(AxeGo&&)		= delete;
+
 	Sides axeSide = Sides::NONE;
 	Sides originalAxeSide = Sides::RIGHT;
 
@@ -14,4 +19,3 @@ public:
 	void SetSide(Sides side) { this->axeSide = side; }
 
 };
-

@@ -3,10 +3,10 @@
 class EffectLog : public SpriteGo
 {
 protected:
-	EffectLog(const EffectLog&) = delete;
-	EffectLog(EffectLog&&) = delete;
+	EffectLog(const EffectLog&)			   = delete;
+	EffectLog(EffectLog&&)				   = delete;
 	EffectLog& operator=(const EffectLog&) = delete;
-	EffectLog& operator=(EffectLog&&) = delete;
+	EffectLog& operator=(EffectLog&&)	   = delete;
 
 	sf::Vector2f gravity = { 0.f, 500.f };
 	sf::Vector2f velocity;
@@ -18,7 +18,7 @@ public:
 	float timer = 0.f;
 
 	EffectLog(const std::string& name = "");
-	virtual ~EffectLog() = default;
+	virtual ~EffectLog()					= default;
 
 	void Update(float dt) override;
 

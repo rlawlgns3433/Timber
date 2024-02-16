@@ -19,6 +19,7 @@ protected :
 
 	ResourceManager<sf::Texture>& textureManager;
 	ResourceManager<sf::Font>& fontManager;
+	ResourceManager<sf::SoundBuffer>& soundManager;
 
 	// active, inactive 된 gameobjects를 다르게 관리하는 리스트 필요
 
